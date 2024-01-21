@@ -1,11 +1,11 @@
-/*!
-	\brief Блок 2 - Реализация стационарных моделей с прицелом на квазистационар
+п»ї/*!
+	\brief Р‘Р»РѕРє 2 - Р РµР°Р»РёР·Р°С†РёСЏ СЃС‚Р°С†РёРѕРЅР°СЂРЅС‹С… РјРѕРґРµР»РµР№ СЃ РїСЂРёС†РµР»РѕРј РЅР° РєРІР°Р·РёСЃС‚Р°С†РёРѕРЅР°СЂ
 	\author Bilyalov Eldar
 	\version 1
 	\date 21.01.2024
 */
 
-// Подключаем необходимые библиотеки
+// РџРѕРґРєР»СЋС‡Р°РµРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ Р±РёР±Р»РёРѕС‚РµРєРё
 #include <iostream>
 #include <cmath>
 #include <locale.h>
@@ -14,16 +14,16 @@
 #include <fixed/fixed.h>
 #include <pde_solvers/pde_solvers.h>
 
-// Используем простравнство имен std
+// РСЃРїРѕР»СЊР·СѓРµРј РїСЂРѕСЃС‚СЂР°РІРЅСЃС‚РІРѕ РёРјРµРЅ std
 using namespace std;
 
-/// @brief Pipiline_parameters - Структура парметров трубопровода
-/// @param  D - внешний диаметр [мм]
-/// @param ds - толщина стенки [мм]
-/// @param z0 - высота в начале участка трубопровода [м]
-/// @param zl - высотка в конце участка трубопровода [м]
-/// @param delta - абсолютная шероховатость трубы [мм]
-/// @param l - длина трубопровода [км]
+/// @brief Pipiline_parameters - РЎС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР°
+/// @param  D - РІРЅРµС€РЅРёР№ РґРёР°РјРµС‚СЂ [РјРј]
+/// @param ds - С‚РѕР»С‰РёРЅР° СЃС‚РµРЅРєРё [РјРј]
+/// @param z0 - РІС‹СЃРѕС‚Р° РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР° [Рј]
+/// @param zl - РІС‹СЃРѕС‚РєР° РІ РєРѕРЅС†Рµ СѓС‡Р°СЃС‚РєР° С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР° [Рј]
+/// @param delta - Р°Р±СЃРѕР»СЋС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ С‚СЂСѓР±С‹ [РјРј]
+/// @param l - РґР»РёРЅР° С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР° [РєРј]
 struct Pipiline_parameters {
 	double D; 
 	double ds; 
@@ -35,12 +35,12 @@ struct Pipiline_parameters {
 
 
 
-/// @brief Oil_parameters - Структура парметров нефти
-/// @param ro - плотность нефти [кг/м3]
-/// @param nu - кинематическая вязкость [сСт]
-/// @param pl - давление в конце участка нефтепровода [МПа]
-/// @param p0 - давление в начале участка нефтепровода [МПа]
-/// @param Q -  расход [м^3/ч]
+/// @brief Oil_parameters - РЎС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ РЅРµС„С‚Рё
+/// @param ro - РїР»РѕС‚РЅРѕСЃС‚СЊ РЅРµС„С‚Рё [РєРі/Рј3]
+/// @param nu - РєРёРЅРµРјР°С‚РёС‡РµСЃРєР°СЏ РІСЏР·РєРѕСЃС‚СЊ [СЃРЎС‚]
+/// @param pl - РґР°РІР»РµРЅРёРµ РІ РєРѕРЅС†Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР° [РњРџР°]
+/// @param p0 - РґР°РІР»РµРЅРёРµ РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР° [РњРџР°]
+/// @param Q -  СЂР°СЃС…РѕРґ [Рј^3/С‡]
 struct Oil_parameters {
 	double ro; 
 	double nu; 
@@ -49,40 +49,40 @@ struct Oil_parameters {
 	double Q; 
 };
 
-/// @brief pressure_p0 - Функция, рассчитывающая давление в начале участка нефтепровода [МПа]
-/// @param pipiline_parameters_QP - структура парметров трубопровода
-/// @param oil_parameters_QP - структура парметров нефти
-/// @param lambda - коэффициент гидравлического сопротивления
-/// @param v - скорость течения нефти в системе СИ
-/// @param d - внутренний диаметр трубы в системе СИ
-/// @return oil_parameters_QP.p0 - давление в начале участка нефтепровода [МПа]
+/// @brief pressure_p0 - Р¤СѓРЅРєС†РёСЏ, СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‰Р°СЏ РґР°РІР»РµРЅРёРµ РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР° [РњРџР°]
+/// @param pipiline_parameters_QP - СЃС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР°
+/// @param oil_parameters_QP - СЃС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ РЅРµС„С‚Рё
+/// @param lambda - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ
+/// @param v - СЃРєРѕСЂРѕСЃС‚СЊ С‚РµС‡РµРЅРёСЏ РЅРµС„С‚Рё РІ СЃРёСЃС‚РµРјРµ РЎР
+/// @param d - РІРЅСѓС‚СЂРµРЅРЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ РІ СЃРёСЃС‚РµРјРµ РЎР
+/// @return oil_parameters_QP.p0 - РґР°РІР»РµРЅРёРµ РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР° [РњРџР°]
 double pressure_p0(Pipiline_parameters pipiline_parameters_QP, Oil_parameters oil_parameters_QP, double lambda, double v, double d) {
 	oil_parameters_QP.p0 = (oil_parameters_QP.ro * 9.81) * (oil_parameters_QP.pl * 1000000 / (oil_parameters_QP.ro * 9.81) - pipiline_parameters_QP.z0 + pipiline_parameters_QP.zl + (((lambda * pipiline_parameters_QP.l * 1000) / d) * pow(v, 2)) / (2 * 9.81)) * 0.000001;
 	return oil_parameters_QP.p0;
 }
 
-/// @brief Hydraulic_resistance_coefficient - класс гидравлического сопротивления
+/// @brief Hydraulic_resistance_coefficient - РєР»Р°СЃСЃ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ
 class  Hydraulic_resistance_coefficient {
 public:
 
-	/// @brief Формула Стокса
-	/// @param lambda - Коэффициент гидравлического сопротивления
+	/// @brief Р¤РѕСЂРјСѓР»Р° РЎС‚РѕРєСЃР°
+	/// @param lambda - РљРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ
 	/// @return lambda
 	double stokes_formula(double Re) {
 		double lambda = 64 / Re;
 		return lambda;
 	}
 
-	/// @brief Формула Блазиуса
-	/// @param lambda - Коэффициент гидравлического сопротивления
+	/// @brief Р¤РѕСЂРјСѓР»Р° Р‘Р»Р°Р·РёСѓСЃР°
+	/// @param lambda - РљРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ
 	/// @return lambda
 	double blasius_formula(double Re) {
 		double lambda = 0.3164 / pow(Re, 0.25);
 		return lambda;
 	}
 
-	/// @brief Формула Альтшуля
-	/// @param lambda - Коэффициент гидравлического сопротивления
+	/// @brief Р¤РѕСЂРјСѓР»Р° РђР»СЊС‚С€СѓР»СЏ
+	/// @param lambda - РљРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ
 	/// @return lambda
 	double altschul_formula(double Re, double e) {
 		double lambda = 0.11 * pow(e + 68 / Re, 0.25);
@@ -90,34 +90,34 @@ public:
 	}
 };
 
-/// @brief Функция решения задачи QP
-/// @param Pipiline_parameters - cтруктура парметров трубопровода
-/// @param Oil_parameters - cтруктура парметров нефти
-/// @return p0 - давление в начале участка нефтепровода
+/// @brief Р¤СѓРЅРєС†РёСЏ СЂРµС€РµРЅРёСЏ Р·Р°РґР°С‡Рё QP
+/// @param Pipiline_parameters - cС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР°
+/// @param Oil_parameters - cС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ РЅРµС„С‚Рё
+/// @return p0 - РґР°РІР»РµРЅРёРµ РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР°
 double solver(Pipiline_parameters pipiline_parameters_QP, Oil_parameters oil_parameters_QP) {
-	// Внутренний диаметр трубы в системе СИ
+	// Р’РЅСѓС‚СЂРµРЅРЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ РІ СЃРёСЃС‚РµРјРµ РЎР
 	double d = (pipiline_parameters_QP.D - 2 * pipiline_parameters_QP.ds)/1000; 
-	// Относительная эквивалентная шероховатость
+	// РћС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ СЌРєРІРёРІР°Р»РµРЅС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ
 	double e = (pipiline_parameters_QP.delta / 1000) / d;
-	// Скорость течения нефти в системе СИ
+	// РЎРєРѕСЂРѕСЃС‚СЊ С‚РµС‡РµРЅРёСЏ РЅРµС„С‚Рё РІ СЃРёСЃС‚РµРјРµ РЎР
 	double v = (4 * oil_parameters_QP.Q / 3600) / (3.14 * pow(d, 2));
-	// Число Рейнольдса, где nu переведено в систему СИ
+	// Р§РёСЃР»Рѕ Р РµР№РЅРѕР»СЊРґСЃР°, РіРґРµ nu РїРµСЂРµРІРµРґРµРЅРѕ РІ СЃРёСЃС‚РµРјСѓ РЎР
 	double Re = v * d / (oil_parameters_QP.nu * 0.000001);
 	
-	// Объявляем объект lambda_QP класса Hydraulic_resistance_coefficient
+	// РћР±СЉСЏРІР»СЏРµРј РѕР±СЉРµРєС‚ lambda_QP РєР»Р°СЃСЃР° Hydraulic_resistance_coefficient
 	Hydraulic_resistance_coefficient lambda_QP;
 	
-	// Формула Стокса
+	// Р¤РѕСЂРјСѓР»Р° РЎС‚РѕРєСЃР°
 	if (Re < 2000) {
 		double lambda = lambda_QP.stokes_formula(Re);
 		return pressure_p0(pipiline_parameters_QP,oil_parameters_QP, lambda, v, d);
 	}
-	// Формула Блазиуса
+	// Р¤РѕСЂРјСѓР»Р° Р‘Р»Р°Р·РёСѓСЃР°
 	else if (Re >= 2000 && Re <= 4000) {
 		double lambda = lambda_QP.blasius_formula(Re);
 		return pressure_p0(pipiline_parameters_QP, oil_parameters_QP, lambda, v, d);
 	}
-	// Формула Альтшуля
+	// Р¤РѕСЂРјСѓР»Р° РђР»СЊС‚С€СѓР»СЏ
 	else {
 		double lambda = lambda_QP.altschul_formula(Re, e);
 		return pressure_p0(pipiline_parameters_QP, oil_parameters_QP, lambda, v, d);

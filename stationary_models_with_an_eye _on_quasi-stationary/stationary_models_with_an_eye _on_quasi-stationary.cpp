@@ -8,6 +8,7 @@
 // Подключаем необходимые библиотеки
 #include <iostream>
 #include <cmath>
+#include <locale.h>
 #include "gtest/gtest.h"
 #include <iomanip>
 #include <fixed/fixed.h>

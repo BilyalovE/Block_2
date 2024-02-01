@@ -14,9 +14,11 @@
 #include <iomanip>
 #include <fixed/fixed.h>
 #include <pde_solvers/pde_solvers.h>
+#include <fixed/fixed_nonlinear_solver.h>
 
 // Используем простравнство имен std
 using namespace std;
+using namespace pde_solvers;
 
 /// @brief Pipiline_parameters - Структура парметров трубопровода
 /// @param  D - внешний диаметр [мм]
@@ -121,16 +123,16 @@ public:
 		return Re;
 	}
 	
-	/// @brief flow rate - метод, рассчитывающий скорость по заданному расходу нефти
+	/// @brief speed_flow - метод, рассчитывающий скорость по заданному расходу нефти
 	/// @param oil_parameters_XX - структура парметров нефти
 	/// @param d - внутренний диаметр трубы [м]
 	/// @return v - cкорость течения нефти в системе СИ
-	double flow_rate(Oil_parameters oil_parameters_QP, double d) {
+	double speed_flow(Oil_parameters oil_parameters_QP, double d) {
 		double v = (4 * oil_parameters_QP.Q / 3600) / (3.14 * pow(d, 2));
 		return v;
 	}	
 
-	/// @brief flow_pressure - метод, рассчитывающий скорость в задаче PP
+	/// @brief speed_pressure - метод, рассчитывающий скорость по давлению в задаче PP
 	/// @param pipiline_parameters_XX - структура парметров трубопровода
 	/// @param oil_parameters_XX - структура парметров нефти
 	/// @param lambda - коэффициент гидравлического сопротивления
@@ -138,7 +140,7 @@ public:
 	/// @param oil_parameters_XX.p0 - давление в начале участка нефтепровода [МПа]
 	/// @param oil_parameters_XX.pl - давление в конце участка нефтепровода [МПа]
 	/// @return v - cкорость течения нефти в системе СИ	
-	double flow_pressure(Pipiline_parameters pipiline_parameters_XX, Oil_parameters oil_parameters_XX, double lambda, double d) {
+	double speed_pressure(Pipiline_parameters pipiline_parameters_XX, Oil_parameters oil_parameters_XX, double lambda, double d) {
 		double v = pow((2 * 9.81 * d / pipiline_parameters_XX.l / 1000 * ((oil_parameters_XX.p0  - oil_parameters_XX.pl) * 1000000 / (oil_parameters_XX.ro * 9.81) + pipiline_parameters_XX.z0 - pipiline_parameters_XX.zl) / lambda), 0.5);
 		return v;
 	}
@@ -156,7 +158,7 @@ public:
 /// @brief Iterative_solutions - класс для решения задач из блока 2 численными методами
 class Iterative_solutions {
 public:
-	/// @brief method_eyler - численное интегрирование дифференциального уравнения методом Эйлера
+	/// @brief solver_eyler - численное интегрирование дифференциального уравнения методом Эйлера
 	/// @param pipiline_parameters_XX_Eyler - cтруктура парметров трубопровода
 	/// @param Oil_parameters - cтруктура парметров нефти
 	/// @param tw - касательное напряжение трения, учитывающее трение жидкости при течении по трубе
@@ -164,20 +166,15 @@ public:
 	/// @param h - шаг по по координате расчетной сетки [м] 
 	/// @param p_prev - давление на предыдущей итерации (граничное условие) [МПа]
 	/// @return p_current - давление на текущей итерации (рассчитанное значение) [МПа]
-	double method_eyler(Pipiline_parameters pipiline_parameters_XX, Oil_parameters oil_parameters_XX, double tw, int n, double h, double d, double p_prev) {
+	double solver_eyler(Pipiline_parameters pipiline_parameters_XX, Oil_parameters oil_parameters_XX, double tw, int n, double h, double d, double p_prev) {
 		for (size_t i = 1; i <= n; i++) {
 			double p_current = (p_prev * 1000000 - h * (-4 * tw / d - oil_parameters_XX.ro * 9.81 * (pipiline_parameters_XX.zl - pipiline_parameters_XX.z0) / (n - 1) / h))/1000000;
 			return p_current;
 		}
 	}
-	/// @brief 
-	/// @return 
-	double method_newton() {
-
-	}
 };
 
-/// @brief Функция решения задачи QP
+/// @brief solver_QP - функция решения задачи QP
 /// @param Pipiline_parameters - cтруктура парметров трубопровода
 /// @param Oil_parameters - cтруктура парметров нефти
 /// @return p0 - давление в начале участка нефтепровода [МПа]
@@ -192,28 +189,84 @@ double solver_QP(Pipiline_parameters pipiline_parameters_QP, Oil_parameters oil_
 	// e - относительная эквивалентная шероховатость
 	double e = task_QP.relative_roughness(pipiline_parameters_QP, d);
 	// v - cкорость течения нефти в системе СИ
-	double v = task_QP.flow_rate(oil_parameters_QP, d);
+	double v = task_QP.speed_flow(oil_parameters_QP, d);
 	// Re - число Рейнольдса
 	double Re = task_QP.reynolds_number(oil_parameters_QP, v, d);
-
+	// p0 - давление в начале участка нефтепровода[МПа]
+	double p0;
+	// lambda - коэффициент гидравлического сопротивления
+	double lambda;
 	// Формула Стокса
 	if (Re < 2000) {
-		double lambda = lambda_QP.stokes_formula(Re);
-		return task_QP.pressure_p0(pipiline_parameters_QP,oil_parameters_QP, lambda, v, d);
+		lambda = lambda_QP.stokes_formula(Re);
+		p0 = task_QP.pressure_p0(pipiline_parameters_QP, oil_parameters_QP, lambda, v, d);
+		return p0;
 	}
 	// Формула Блазиуса
 	else if (Re >= 2000 && Re <= 4000) {
-		double lambda = lambda_QP.blasius_formula(Re);
-		return task_QP.pressure_p0(pipiline_parameters_QP, oil_parameters_QP, lambda, v, d);
+		lambda = lambda_QP.blasius_formula(Re);
+		p0 = task_QP.pressure_p0(pipiline_parameters_QP, oil_parameters_QP, lambda, v, d);
+		return p0;
 	}
 	// Формула Альтшуля
 	else {
-		double lambda = lambda_QP.altschul_formula(Re, e);
-		return task_QP.pressure_p0(pipiline_parameters_QP, oil_parameters_QP, lambda, v, d);
+		lambda = lambda_QP.altschul_formula(Re, e);
+		p0 = task_QP.pressure_p0(pipiline_parameters_QP, oil_parameters_QP, lambda, v, d);
+		return p0;
 	}
 }
 
-/// @brief Функция решения задачи PP
+/// @brief solver_QP_Eyler - функция решения задачи QP методом Эйлера
+/// @param pipiline_parameters_QP_Eyler - cтруктура парметров трубопровода
+/// @param oil_parameters_QP_Eyler - cтруктура парметров нефти
+/// @return p0 - давление в начале участка нефтепровода [МПа]
+double solver_QP_Eyler(Pipiline_parameters pipiline_parameters_QP_Eyler, Oil_parameters oil_parameters_QP_Eyler, int n, double h) {
+	// p_prev - давление на предыдущей итерации (граничное условие) [МПа]
+	double p_prev = oil_parameters_QP_Eyler.pl;
+	// p_current - давление на текущей итерации(рассчитанное значение) [МПа]
+	double p_current ;
+	// Объявляем объект task_PP класса Bernoulli_equation
+	Bernoulli_equation task_QP_Eyler;
+	// Объявляем объект lambda_QP_Eyler класса Hydraulic_resistance_coefficient
+	Hydraulic_resistance_coefficient lambda_QP_Eyler;
+	// Объявляем объект iterativetask_QP_Eyler класса Iterative_solutions
+	Iterative_solutions iterativetask_QP_Eyler;
+	// d - внутренний диаметр трубы[м]
+	double d = task_QP_Eyler.diameter(pipiline_parameters_QP_Eyler);
+	// v - cкорость течения нефти в системе СИ
+	double v = task_QP_Eyler.speed_flow(oil_parameters_QP_Eyler, d);
+	// e - относительная эквивалентная шероховатость
+	double e = task_QP_Eyler.relative_roughness(pipiline_parameters_QP_Eyler, d);
+	// Re - число Рейнольдса
+	double Re = task_QP_Eyler.reynolds_number(oil_parameters_QP_Eyler, v, d);
+	// lambda - коэффициент гидравлического сопротивления
+	double lambda;
+	// p0 - давление в начале участка нефтепровода[МПа]
+	double p0;
+	// Формула Стокса
+	if (Re < 2000) {
+		lambda = lambda_QP_Eyler.stokes_formula(Re);
+	}
+	// Формула Блазиуса
+	else if (Re >= 2000 && Re <= 4000) {
+		lambda = lambda_QP_Eyler.blasius_formula(Re);
+	}
+	// Формула Альтшуля
+	else {
+		lambda = lambda_QP_Eyler.altschul_formula(Re, e);
+	}
+	// tw - касательное напряжение трения, учитывающее трение жидкости при течении по трубе
+	double tw = lambda / 8 * oil_parameters_QP_Eyler.ro * pow(v, 2);
+	for (size_t i = 1; i <= n; i++)
+	{
+		p_current = iterativetask_QP_Eyler.solver_eyler(pipiline_parameters_QP_Eyler, oil_parameters_QP_Eyler, tw, n, h, d, p_prev);
+		p_prev = p_current;
+	}
+	p0 = p_current;
+	return p0;
+}
+
+/// @brief solver_PP - функция решения задачи PP
 /// @param Pipiline_parameters - cтруктура парметров трубопровода
 /// @param Oil_parameters - cтруктура парметров нефти
 /// @return 
@@ -223,7 +276,7 @@ double solver_PP(Pipiline_parameters pipiline_parameters_PP, Oil_parameters oil_
 	// labmda_current - гидравлическое сопротивление на текущем приближении
 	double labmda_current = 0.02;
 	// eps - допустимая погрешность
-	double eps = 0.0005;
+	double eps = 0.00005;
 	// Объявляем объект task_PP класса Bernoulli_equation
 	Bernoulli_equation task_PP;
 	// d - внутренний диаметр трубы[м]
@@ -231,10 +284,9 @@ double solver_PP(Pipiline_parameters pipiline_parameters_PP, Oil_parameters oil_
 	// Объявляем объект lambda_PP класса Hydraulic_resistance_coefficient
 	Hydraulic_resistance_coefficient lambda_PP;
 	// v - cкорость течения нефти в системе СИ
-	double v = task_PP.flow_pressure(pipiline_parameters_PP, oil_parameters_PP, labmda_current, d);
-	int i = 1;
+	double v = task_PP.speed_pressure(pipiline_parameters_PP, oil_parameters_PP, labmda_current, d);
 	while (abs(labmda_previous - labmda_current) >= eps) {
-		
+
 		// Re - число Рейнольдса
 		double Re = task_PP.reynolds_number(oil_parameters_PP, v, d);
 		// e - относительную эквивалентная шероховатость
@@ -254,55 +306,94 @@ double solver_PP(Pipiline_parameters pipiline_parameters_PP, Oil_parameters oil_
 			labmda_previous = labmda_current;
 			labmda_current = lambda_PP.altschul_formula(Re, e);
 		}
-		v = task_PP.flow_pressure(pipiline_parameters_PP, oil_parameters_PP, labmda_current, d);
-		i += 1;
+		v = task_PP.speed_pressure(pipiline_parameters_PP, oil_parameters_PP, labmda_current, d);
 	}
 	double Q = task_PP.volume_flow(v, d);
 	return Q;
 }
 
-double solver_QP_Eyler(Pipiline_parameters pipiline_parameters_QP_Eyler, Oil_parameters oil_parameters_QP_Eyler, int n, double h) {
-	// p_prev - давление на предыдущей итерации (граничное условие) [МПа]
-	double p_prev = oil_parameters_QP_Eyler.pl;
-	// p_current - давление на текущей итерации(рассчитанное значение) [МПа]
-	double p_current ;
-	// Объявляем объект task_PP класса Bernoulli_equation
-	Bernoulli_equation task_QP_Eyler;
-	// Объявляем объект lambda_QP_Eyler класса Hydraulic_resistance_coefficient
-	Hydraulic_resistance_coefficient lambda_QP_Eyler;
-	// Объявляем объект iterativetask_QP_Eyler класса Iterative_solutions
-	Iterative_solutions iterativetask_QP_Eyler;
-	// d - внутренний диаметр трубы[м]
-	double d = task_QP_Eyler.diameter(pipiline_parameters_QP_Eyler);
-	// v - cкорость течения нефти в системе СИ
-	double v = task_QP_Eyler.flow_rate(oil_parameters_QP_Eyler, d);
-	// e - относительная эквивалентная шероховатость
-	double e = task_QP_Eyler.relative_roughness(pipiline_parameters_QP_Eyler, d);
-	// Re - число Рейнольдса
-	double Re = task_QP_Eyler.reynolds_number(oil_parameters_QP_Eyler, v, d);
-	double lambda;
-	// Формула Стокса
-	if (Re < 2000) {
-		lambda = lambda_QP_Eyler.stokes_formula(Re);
-	}
-	// Формула Блазиуса
-	else if (Re >= 2000 && Re <= 4000) {
-		lambda = lambda_QP_Eyler.blasius_formula(Re);
-	}
-	// Формула Альтшуля
-	else {
-		lambda = lambda_QP_Eyler.altschul_formula(Re, e);
-	}
-	// tw - касательное напряжение трения, учитывающее трение жидкости при течении по трубе
-	double tw = lambda / 8 * oil_parameters_QP_Eyler.ro * pow(v, 2);
-	for (size_t i = 1; i <= n; i++){
-		p_current = iterativetask_QP_Eyler.method_eyler(pipiline_parameters_QP_Eyler, oil_parameters_QP_Eyler, tw, n, h, d, p_prev);
-		p_prev = p_current;
-	}
-	return p_current;
+
+/// @brief solver_newton - метод Ньютона-Рафсона для решения систем нелинейных уравнений фиксированный размерности
+
+
+/// @brief PP_solver_newton - класс основанный на решетеле методом Ньютона-Рафсона для задачи PP
+// <1> - Размерность системы уравнений - cкалярный случай
+class PP_solver_newton : public fixed_system_t<1>
+{
+private:
+	// Объявление полей класса
 	
-	
+	// pipiline_parameters_PP_Newton - поле класса (структура с именем Pipeline_parameters для переменной pipiline_parameters_PP_Newton)
+	Pipiline_parameters m_pipiline_parameters_PP_Newton;
+	// m_oil_parameters_PP_Newton - поле класса (структура с именем Oil_parameters для переменной oil_parameters_PP_Newton)
+	Oil_parameters m_oil_parameters_PP_Newton;
+	// m_lambda - поле класса - коэффициент гидравлического сопротивления
+	double m_lambda;
+	// m_d - поле класса - внутренний диаметр трубы[м]
+	double m_d;
+	// m_initial_speed_approximation - начальное приближение cкорости течения нефти, [м/с]
+	double m_initial_speed_approximation;
+
+	using fixed_system_t<1>::var_type;
+
+public:
+	/// @brief PP_solver_newton - конструктор класса для задачи PP методом Ньютона-Рафсона
+	PP_solver_newton(Pipiline_parameters pipiline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton) {
+		m_pipiline_parameters_PP_Newton = pipiline_parameters_PP_Newton;
+		m_oil_parameters_PP_Newton = oil_parameters_PP_Newton;
+	}
+
+	/// @brief residuals - функция невязок
+	/// @param - v - искомый параметр (скорость, [м/с])
+	var_type residuals(const var_type &v) {
+		
+		// Объявляем объект task_PP_Newton класса Bernoulli_equation
+		Bernoulli_equation task_PP_Newton;
+		// d - внутренний диаметр трубы[м]
+		double d = task_PP_Newton.diameter(m_pipiline_parameters_PP_Newton);// Re - число Рейнольдса
+		double Re = task_PP_Newton.reynolds_number(m_oil_parameters_PP_Newton, v, d);
+		// relative_equivalent_roughness - e - относительную эквивалентная шероховатость
+		double relative_equivalent_roughness = task_PP_Newton.relative_roughness(m_pipiline_parameters_PP_Newton, d);
+		// hydraulic_resistance - гидравлическое_сопротивление (lambda)
+		double hydraulic_resistance = hydraulic_resistance_isaev(Re, relative_equivalent_roughness);
+		m_lambda = hydraulic_resistance;
+		m_d = d;
+		
+		// result - функция невязок
+		double result;
+		result = v - task_PP_Newton.speed_pressure(m_pipiline_parameters_PP_Newton, m_oil_parameters_PP_Newton, m_lambda, m_d);
+		return result;
+	}
+
+	double solver_newton_rafson(){
+		// Задание настроек решателя по умолчанию
+		fixed_solver_parameters_t<1, 0> parameters;
+		// Создание структуры для записи результатов расчета
+		fixed_solver_result_t<1> result;
+		// Решение системы нелинейныйх уравнений <2> с помощью решателя Ньютона - Рафсона
+		// m_initial_speed_approximation - Начальное приближение
+		m_initial_speed_approximation = 0;
+		fixed_newton_raphson<1>::solve_dense(*this, { m_initial_speed_approximation }, parameters, &result);
+		// Объявляем объект task_PP_Newton класса Bernoulli_equation
+		Bernoulli_equation task_PP_Newton;
+		// Q - объемный расход[м ^ 3 / ч]
+		double Q = task_PP_Newton.volume_flow(result.argument, m_d);
+		return Q;
+	}
+
+};
+
+/// @brief solver_PP_Newton - функция решения задачи PP_Newton
+/// @param Pipiline_parameters - cтруктура парметров трубопровода
+/// @param Oil_parameters - cтруктура парметров нефти
+/// @return Q - расход
+double solver_PP_Newton(Pipiline_parameters pipiline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton) {
+	// Создание экземпляра класса, который и будет решаемой системой
+	PP_solver_newton solver_newton(pipiline_parameters_PP_Newton, oil_parameters_PP_Newton);
+	double Q = solver_newton.solver_newton_rafson();
+	return Q;
 }
+
 
 TEST(Block_2, Task_QP) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipiline_parameters_QP
@@ -313,14 +404,6 @@ TEST(Block_2, Task_QP) {
 	EXPECT_EQ(6.03, p0);
 }
 
-TEST(Block_2, Task_PP) {
-	/// Объявление структуры с именем Pipeline_parameters для переменной pipiline_parameters_PP
-	Pipiline_parameters pipiline_parameters_PP = { 720, 10, 50, 100, 0.15, 80 };
-	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP
-	Oil_parameters oil_parameters_PP = { 870, 15, 5, 0.8};
-	double Q = solver_PP(pipiline_parameters_PP, oil_parameters_PP);
-	EXPECT_EQ(2739, round(Q-6));
-}
 
 TEST(Block_2, Task_QP_Eyler) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipiline_parameters_QP
@@ -334,3 +417,21 @@ TEST(Block_2, Task_QP_Eyler) {
 	double pk = round(100*solver_QP_Eyler(pipiline_parameters_QP_Eyler, oil_parameters_QP_Eyler, n, h))/100;
 	EXPECT_EQ(6.03, pk);
 } 
+
+TEST(Block_2, Task_PP) {
+	/// Объявление структуры с именем Pipeline_parameters для переменной pipiline_parameters_PP
+	Pipiline_parameters pipiline_parameters_PP = { 720, 10, 50, 100, 0.15, 80 };
+	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP
+	Oil_parameters oil_parameters_PP = { 870, 15, 5, 0.8 };
+	double Q = solver_PP(pipiline_parameters_PP, oil_parameters_PP);
+	EXPECT_EQ(2739, Q);
+}
+
+TEST(Block_2, Task_PP_Newton) {
+	/// Объявление структуры с именем Pipeline_parameters для переменной pipiline_parameters_PP_Newton
+	Pipiline_parameters pipiline_parameters_PP_Newton = { 720, 10, 50, 100, 0.15, 80 };
+	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Newton
+	Oil_parameters oil_parameters_PP_Newton = { 870, 15, 5, 0.8 };
+	double Q = solver_PP_Newton(pipiline_parameters_PP_Newton, oil_parameters_PP_Newton);
+	EXPECT_EQ(2739, Q);
+}

@@ -8,6 +8,7 @@ Hydraulic_resistance_coefficient::Hydraulic_resistance_coefficient(double Re, do
 	m_relative_roughness = relative_roughness;
 	}
 
+// Методы класса
 
 double Hydraulic_resistance_coefficient::stokes_formula() 
 {

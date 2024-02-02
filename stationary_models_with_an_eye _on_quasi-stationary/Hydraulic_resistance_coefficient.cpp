@@ -4,11 +4,16 @@
 /// @param Re - число Рейнольдса (Re)
 /// @param m_relative_roughness - относительная эквивалентная шероховатость (e)
 Hydraulic_resistance_coefficient::Hydraulic_resistance_coefficient(double Re, double relative_roughness){
-	m_Re = Re;
-	m_relative_roughness = relative_roughness;
+	void setter(double Re, double relative_roughness);
 	}
 
 // Методы класса
+
+void Hydraulic_resistance_coefficient::setter(double Re, double relative_roughness)
+{
+	m_Re = Re;
+	m_relative_roughness = relative_roughness;
+}
 
 double Hydraulic_resistance_coefficient::stokes_formula() 
 {

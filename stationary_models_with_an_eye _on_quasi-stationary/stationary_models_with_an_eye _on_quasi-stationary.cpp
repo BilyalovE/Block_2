@@ -1,8 +1,8 @@
 ﻿/*!
 	\brief Блок 2 - Реализация стационарных моделей с прицелом на квазистационар
 	\author Bilyalov Eldar
-	\version 1
-	\date 21.01.2024
+	\version 1.01 - класс Hydraulic_resistance_coefficient реализован в отдельных файлах
+	\date 01.02.2024
 */
 
 // Подключаем необходимые библиотеки
@@ -16,17 +16,22 @@
 #include <pde_solvers/pde_solvers.h>
 #include <fixed/fixed_nonlinear_solver.h>
 
-// Используем простравнство имен std
+// Подключение класса для определения гидравлического сопротивления 
+#include "Hydraulic_resistance_coefficient.h"
+#include "Hydraulic_resistance_coefficient.cpp"
+
+
+// Используем простравнство имен std и pde_solvers
 using namespace std;
 using namespace pde_solvers;
 
 /// @brief Pipiline_parameters - Структура парметров трубопровода
-/// @param  D - внешний диаметр [мм]
-/// @param ds - толщина стенки [мм]
+/// @param D - внешний диаметр [м]
+/// @param ds - толщина стенки [м]
 /// @param z0 - высота в начале участка трубопровода [м]
 /// @param zl - высотка в конце участка трубопровода [м]
-/// @param delta - абсолютная шероховатость трубы [мм]
-/// @param l - длина трубопровода [км]
+/// @param delta - абсолютная шероховатость трубы [м]
+/// @param l - длина трубопровода [м]
 struct Pipiline_parameters {
 	double D; 
 	double ds; 
@@ -40,10 +45,10 @@ struct Pipiline_parameters {
 
 /// @brief Oil_parameters - Структура парметров нефти
 /// @param ro - плотность нефти [кг/м3]
-/// @param nu - кинематическая вязкость [сСт]
-/// @param p0 - давление в начале участка нефтепровода [МПа]
-/// @param pl - давление в конце участка нефтепровода [МПа]
-/// @param Q -  расход [м^3/ч]
+/// @param nu - кинематическая вязкость [Ст]
+/// @param p0 - давление в начале участка нефтепровода [Па]
+/// @param pl - давление в конце участка нефтепровода [Па]
+/// @param Q -  расход [м^3/с]
 struct Oil_parameters {
 	double ro; 
 	double nu; 
@@ -53,36 +58,8 @@ struct Oil_parameters {
 };
 
 
-/// @brief Hydraulic_resistance_coefficient - класс гидравлического сопротивления
-class  Hydraulic_resistance_coefficient {
-public:
-
-	/// @brief Формула Стокса
-	/// @param lambda - Коэффициент гидравлического сопротивления
-	/// @return lambda
-	double stokes_formula(double Re) {
-		double lambda = 64 / Re;
-		return lambda;
-	}
-
-	/// @brief Формула Блазиуса
-	/// @param lambda - Коэффициент гидравлического сопротивления
-	/// @return lambda
-	double blasius_formula(double Re) {
-		double lambda = 0.3164 / pow(Re, 0.25);
-		return lambda;
-	}
-
-	/// @brief Формула Альтшуля
-	/// @param lambda - Коэффициент гидравлического сопротивления
-	/// @return lambda
-	double altschul_formula(double Re, double e) {
-		double lambda = 0.11 * pow(e + 68 / Re, 0.25);
-		return lambda;
-	}
-};
-
-/// @brief Bernoulli_equation - класс для решения задач из блока 2 - Реализация стационарных моделей с прицелом на квазистационар
+/// @brief Bernoulli_equation - класс для решения задач из блока 2 - Реализация стационарных моделей 
+/// с прицелом на квазистационар (Уравнение Бернулли)
 class Bernoulli_equation {
 public:
 	/// @brief pressure_p0 - Метод, рассчитывающий давление в начале участка нефтепровода [МПа]

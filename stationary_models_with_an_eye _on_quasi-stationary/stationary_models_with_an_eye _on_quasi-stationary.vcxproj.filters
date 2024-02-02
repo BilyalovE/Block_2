@@ -18,5 +18,13 @@
     <ClCompile Include="stationary_models_with_an_eye _on_quasi-stationary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Hydraulic_resistance_coefficient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Hydraulic_resistance_coefficient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -21,9 +21,15 @@
     <ClCompile Include="Hydraulic_resistance_coefficient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Bernoulli_equation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hydraulic_resistance_coefficient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bernoulli_equation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

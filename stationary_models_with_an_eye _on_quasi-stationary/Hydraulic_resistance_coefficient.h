@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cmath>
 
 
 /// @brief Hydraulic_resistance_coefficient - класс для определения гидравлического сопротивления 
@@ -7,11 +7,11 @@
 class  Hydraulic_resistance_coefficient {
 	
 	// Поля класса
-	// m_Re -  число рейнольдса
+	// m_Re -  число рейнольдса (Re)
 	double m_Re;
 	// m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 	double m_hydraulic_resistance;
-	// m_relative_roughness - относительная эквивалентная шероховатость
+	// m_relative_roughness - относительная эквивалентная шероховатость (e)
 	double m_relative_roughness;
 
 public:

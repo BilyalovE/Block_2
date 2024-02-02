@@ -1,8 +1,8 @@
 #include "Hydraulic_resistance_coefficient.h"
-#include <cmath>
+
 /// @brief Hydraulic_resistance_coefficient - конструктор класса
-/// @param Re - число Рейнольдса
-/// @param m_relative_roughness - относительная эквивалентная шероховатость
+/// @param Re - число Рейнольдса (Re)
+/// @param m_relative_roughness - относительная эквивалентная шероховатость (e)
 Hydraulic_resistance_coefficient::Hydraulic_resistance_coefficient(double Re, double relative_roughness){
 	m_Re = Re;
 	m_relative_roughness = relative_roughness;

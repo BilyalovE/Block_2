@@ -140,10 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Hydraulic_resistance_coefficient.cpp" />
+    <ClCompile Include="Bernoulli_equation.cpp" />
     <ClCompile Include="stationary_models_with_an_eye _on_quasi-stationary.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hydraulic_resistance_coefficient.h" />
+    <ClInclude Include="Bernoulli_equation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

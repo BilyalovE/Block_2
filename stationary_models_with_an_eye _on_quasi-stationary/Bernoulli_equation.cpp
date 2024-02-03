@@ -1,4 +1,14 @@
+
 #include "Bernoulli_equation.h"
+
+/// @brief Bernoulli_equation - конструктор класса по умолчанию
+/// @param pipiline_parameters - cтруктура парметров трубопровода
+/// @param oil_parameters - структура парметров нефти
+Bernoulli_equation::Bernoulli_equation(Pipiline_parameters& pipiline_parameters, Oil_parameters& oil_parameters)
+{
+	void setter1(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters);
+	
+}
 
 /// @brief Bernoulli_equation - конструктор класса
 /// @param pipiline_parameters - труктура парметров трубопровода
@@ -6,26 +16,30 @@
 /// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 /// @param v - cкорость течения нефти [м/с]
 /// @param d - внутренний диаметр трубы [м]
-Bernoulli_equation::Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
-	const double& hydraulic_resistance, const double& v, const double& d)
+Bernoulli_equation::Bernoulli_equation(Pipiline_parameters &pipiline_parameters, Oil_parameters &oil_parameters,
+	double hydraulic_resistance, double v, double d)
 
 {
-	void setter(const Pipiline_parameters & pipiline_parameters, const Oil_parameters & oil_parameters,
+	void setter2(const Pipiline_parameters & pipiline_parameters, const Oil_parameters & oil_parameters,
 		const double& hydraulic_resistance, const double& v, const double& d);
-	
+
 }
 
 // Методы класса
+void Bernoulli_equation::setter1(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters)
+{
+	m_pipiline_parameters = pipiline_parameters;
+	m_oil_parameters = oil_parameters;
+}
 
-void Bernoulli_equation::setter(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters,
-	double hydraulic_resistance, double v, double d) 
+void Bernoulli_equation::setter2(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters,
+	double hydraulic_resistance, double v, double d)
 {
 	m_pipiline_parameters = pipiline_parameters;
 	m_oil_parameters = oil_parameters;
 	m_hydraulic_resistance = hydraulic_resistance;
 	m_v = v;
 	m_d = d;
-	
 }
 
 double Bernoulli_equation::pressure_p0() {
@@ -56,10 +70,6 @@ double Bernoulli_equation::speed_pressure() {
 	return m_v;
 }
 
-double Bernoulli_equation::speed_pressure() {
-	m_v = pow((2 * k_g * m_d / m_pipiline_parameters.l / ((m_oil_parameters.p0 - m_oil_parameters.pl) / (m_oil_parameters.ro * k_g) + m_pipiline_parameters.z0 - m_pipiline_parameters.zl) / m_hydraulic_resistance), 0.5);
-	return m_v;
-}
 
 double Bernoulli_equation::volume_flow() {
 	return m_Q = k_pi * pow(m_d, 2) * m_v  / 4;

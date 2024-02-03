@@ -1,3 +1,4 @@
+
 #include "Hydraulic_resistance_coefficient.h"
 
 /// @brief Hydraulic_resistance_coefficient - конструктор класса

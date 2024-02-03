@@ -144,6 +144,8 @@
     <ClCompile Include="stationary_models.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="const.h" />
+    <ClInclude Include="struct.h" />
     <ClInclude Include="Hydraulic_resistance_coefficient.h" />
     <ClInclude Include="Bernoulli_equation.h" />
   </ItemGroup>

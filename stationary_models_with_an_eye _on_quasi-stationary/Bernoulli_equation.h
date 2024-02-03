@@ -1,13 +1,16 @@
 #pragma once
-
-#include "stationary_models.cpp"
+#include "struct.h"
+#include "const.h"
+#include <cmath>
+//#include "stationary_models.cpp"
 
 /// @brief Bernoulli_equation - класс для решения задач из блока 2 - Реализация стационарных моделей 
 /// с прицелом на квазистационар (Уравнение Бернулли)
-class Bernoulli_equation {
-	
+class Bernoulli_equation
+{
+
 	// Поля класса
-	
+
 	// m_pipiline_parameters - структура парметров трубопровода
 	Pipiline_parameters m_pipiline_parameters;
 	// m_oil_parameters - структура парметров нефти
@@ -28,9 +31,14 @@ class Bernoulli_equation {
 	double m_p0;
 
 public:
+	/// @brief конструткор класса по умолчанию Bernoulli_equation
+	Bernoulli_equation(Pipiline_parameters &pipiline_parameters, Oil_parameters &oil_parameters);
+
 	/// @brief конструткор класса Bernoulli_equation
-	Bernoulli_equation(const Pipiline_parameters &pipiline_parameters, const Oil_parameters &oil_parameters, 
-		const double &hydraulic_resistance, const double &v, const double &d); 
+	Bernoulli_equation(Pipiline_parameters &pipiline_parameters, Oil_parameters &oil_parameters,
+		double hydraulic_resistance, double v, double d);
+
+	void setter1(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters);
 
 	/// @brief setter - сеттер конструтора Bernoulli_equation
 	/// @param pipiline_parameters - труктура парметров трубопровода
@@ -38,34 +46,35 @@ public:
 	/// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 	/// @param v - cкорость течения нефти [м/с]
 	/// @param d - внутренний диаметр трубы [м]
-	void setter(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters,
+	void setter2(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters,
 		double hydraulic_resistance, double v, double d);
-	
+
+
+
 	/// @brief pressure_p0 - Метод, рассчитывающий давление в начале участка нефтепровода [Па]
 	/// @return m_p0 - давление в начале участка нефтепровода [Па]
-	double pressure_p0() { return m_p0; }
+	double pressure_p0();
 
-	/// @brief internal_diameter - метод, рассчитывающий внутренний диаметр трубы
-	/// @return d - внутренний диаметр трубы [м]
-	double internal_diameter() { return m_d;}
+
+	double internal_diameter();
 
 	/// @brief  relative_roughness - метод, рассчитывающий относительную эквивалентная шероховатость
 	/// @return relative_roughness - oтносительная эквивалентная шероховатость (e)
-	double relative_roughness() { return m_relative_roughness; } 
+	double relative_roughness();
 
 	/// @brief reynolds_number - метод, рассчитывающий число Рейнольдса, где nu переведено в систему СИ
 	/// @return m_Re - число Рейнольдса
-	double reynolds_number() { return m_Re; }
+	double reynolds_number();
 
 	/// @brief speed_flow - метод, рассчитывающий скорость по заданному расходу нефти
 	/// @return m_v - cкорость течения нефти [м/с]
-	double speed_flow() { return m_v; }
+	double speed_flow();
 
 	/// @brief speed_pressure - метод, рассчитывающий скорость по давлению в задаче PP
 	/// @return v - cкорость течения нефти в системе СИ	
-	double speed_pressure() { return m_v; }
+	double speed_pressure();
 
 	/// @brief volume_flow - метод, рассчитывающий объемный расход
 	/// @return m_Q - объемный расход [м^3/c]
-	double volume_flow() { return m_Q; }
+	double volume_flow();
 };

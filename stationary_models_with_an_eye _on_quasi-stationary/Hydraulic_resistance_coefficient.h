@@ -25,13 +25,13 @@ public:
 	
 	/// @brief Формула Стокса
 	/// @return m_hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
-	double stokes_formula() { return m_hydraulic_resistance; }
+	double stokes_formula();
 
 	/// @brief Формула Блазиуса
 	/// @return m_hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
-	double blasius_formula() { return m_hydraulic_resistance; }
+	double blasius_formula();
 
 	/// @brief Формула Альтшуля
 	/// @return m_hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
-	double altschul_formula() { return m_hydraulic_resistance; }
+	double altschul_formula();
 };

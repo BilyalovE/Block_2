@@ -8,7 +8,6 @@
 /// с прицелом на квазистационар (Уравнение Бернулли)
 class Bernoulli_equation
 {
-
 	// Поля класса
 
 	// m_pipiline_parameters - структура парметров трубопровода
@@ -32,13 +31,13 @@ class Bernoulli_equation
 
 public:
 	/// @brief конструткор класса по умолчанию Bernoulli_equation
-	Bernoulli_equation(Pipiline_parameters &pipiline_parameters, Oil_parameters &oil_parameters);
+	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
 
 	/// @brief конструткор класса Bernoulli_equation
-	Bernoulli_equation(Pipiline_parameters &pipiline_parameters, Oil_parameters &oil_parameters,
+	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
 		double hydraulic_resistance, double v, double d);
 
-	void setter1(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters);
+	void setter1(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
 
 	/// @brief setter - сеттер конструтора Bernoulli_equation
 	/// @param pipiline_parameters - труктура парметров трубопровода
@@ -46,8 +45,8 @@ public:
 	/// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 	/// @param v - cкорость течения нефти [м/с]
 	/// @param d - внутренний диаметр трубы [м]
-	void setter2(Pipiline_parameters pipiline_parameters, Oil_parameters oil_parameters,
-		double hydraulic_resistance, double v, double d);
+	void setter2(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
+		double& hydraulic_resistance, const double& v, double& d);
 
 
 
@@ -65,6 +64,8 @@ public:
 	/// @brief reynolds_number - метод, рассчитывающий число Рейнольдса, где nu переведено в систему СИ
 	/// @return m_Re - число Рейнольдса
 	double reynolds_number();
+
+	double reynolds_number(double m_d);
 
 	/// @brief speed_flow - метод, рассчитывающий скорость по заданному расходу нефти
 	/// @return m_v - cкорость течения нефти [м/с]

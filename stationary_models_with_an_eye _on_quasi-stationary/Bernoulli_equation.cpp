@@ -60,7 +60,7 @@ double Bernoulli_equation::reynolds_number() {
 	return m_Re = m_v * m_d / (m_oil_parameters.nu);
 }
 
-double Bernoulli_equation::reynolds_number(double m_d) {
+double Bernoulli_equation::reynolds_number(double m_v) {
 	return m_Re = m_v * m_d / (m_oil_parameters.nu);
 }
 
@@ -73,6 +73,15 @@ double Bernoulli_equation::speed_pressure() {
 	return m_v;
 }
 
+double Bernoulli_equation::speed_pressure(double m_hydraulic_resistance) {
+	m_v = pow((2 * k_g * m_d / m_pipiline_parameters.l * ((m_oil_parameters.p0 - m_oil_parameters.pl) / (m_oil_parameters.ro * k_g) + m_pipiline_parameters.z0 - m_pipiline_parameters.zl) / m_hydraulic_resistance), 0.5);
+	return m_v;
+}
+
 double Bernoulli_equation::volume_flow() {
+	return m_Q = k_pi * pow(m_d, 2) * m_v / 4;
+}
+
+double Bernoulli_equation::volume_flow(double m_v) {
 	return m_Q = k_pi * pow(m_d, 2) * m_v / 4;
 }

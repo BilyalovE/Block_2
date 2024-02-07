@@ -74,8 +74,10 @@ public:
 	/// @brief speed_pressure - метод, рассчитывающий скорость по давлению в задаче PP
 	/// @return v - cкорость течения нефти в системе СИ	
 	double speed_pressure();
+	double speed_pressure(double m_hydraulic_resistance);
 
 	/// @brief volume_flow - метод, рассчитывающий объемный расход
 	/// @return m_Q - объемный расход [м^3/c]
 	double volume_flow();
+	double volume_flow(double m_d);
 };

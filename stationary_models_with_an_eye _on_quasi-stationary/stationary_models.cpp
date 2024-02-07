@@ -116,7 +116,7 @@ double solver_PP(const Pipiline_parameters& pipiline_parameters_PP, const Oil_pa
 	// labmda_current - гидравлическое сопротивление на текущем приближении
 	double labmda_current = 0.02;
 	// eps - допустимая погрешность
-	double eps = 0.0005;
+	double eps = 0.00005;
 	// Объявляем объект task_PP класса Bernoulli_equation
 	Bernoulli_equation task_PP(pipiline_parameters_PP, oil_parameters_PP);
 	// internal_diameter - внутренний диаметр трубы[м]
@@ -157,8 +157,8 @@ private:
 	Pipiline_parameters m_pipiline_parameters_PP_Newton;
 	// m_oil_parameters_PP_Newton - поле класса (структура с именем Oil_parameters для переменной oil_parameters_PP_Newton)
 	Oil_parameters m_oil_parameters_PP_Newton;
-	// m_lambda - поле класса - коэффициент гидравлического сопротивления
-	double m_lambda;
+	// m_hydraulic_resistance - поле класса - коэффициент гидравлического сопротивления
+	double m_hydraulic_resistance;
 	// m_d - поле класса - внутренний диаметр трубы[м]
 	double m_d;
 	// m_initial_speed_approximation - начальное приближение cкорости течения нефти, [м/с]
@@ -181,14 +181,15 @@ public:
 		// internal_diameter - внутренний диаметр трубы [м]
 		double internal_diameter = task_PP_Newton.internal_diameter();// Re - число Рейнольдса
 		double Re = task_PP_Newton.reynolds_number(v);
-		// relative_equivalent_roughness - e - относительную эквивалентная шероховатость
+		// relative_equivalent_roughness - относительную эквивалентная шероховатость (e)
 		double relative_equivalent_roughness = task_PP_Newton.relative_roughness();
 		// hydraulic_resistance - гидравлическое_сопротивление (lambda)
-		double hydraulic_resistance = hydraulic_resistance_altshul(Re, relative_equivalent_roughness);
-		m_lambda = hydraulic_resistance;
+		Hydraulic_resistance_coefficient hydraulic_task_PP_Newton(Re, relative_equivalent_roughness);
+		m_hydraulic_resistance = hydraulic_task_PP_Newton.calculation_hydraulic_resistance_coefficient();
+		//m_hydraulic_resistance = hydraulic_resistance_isaev(Re, relative_equivalent_roughness);
 		// result - функция невязок
 		double result;
-		result = v - task_PP_Newton.speed_pressure();
+		result = v - task_PP_Newton.speed_pressure(m_hydraulic_resistance);
 		return result;
 	}
 
@@ -199,14 +200,14 @@ public:
 		fixed_solver_result_t<1> result;
 		// Решение системы нелинейныйх уравнений <2> с помощью решателя Ньютона - Рафсона
 		// m_initial_speed_approximation - Начальное приближение
-		m_initial_speed_approximation = 0.1;
-		double hydraulic_resistance = 0;
+		m_initial_speed_approximation = 0.4;
 		fixed_newton_raphson<1>::solve_dense(*this, { m_initial_speed_approximation }, parameters, &result);
 		// Объявляем объект task_PP_Newton класса Bernoulli_equation
-		Bernoulli_equation task_PP_Newton(m_pipiline_parameters_PP_Newton, m_oil_parameters_PP_Newton,
-			hydraulic_resistance, result.argument, 0.7);
+		Bernoulli_equation task_PP_Newton(m_pipiline_parameters_PP_Newton, m_oil_parameters_PP_Newton, 0, result.argument, 0.7);
 		// Q - объемный расход[м ^ 3 / ч]
+		cout << result.argument << endl;
 		double Q = task_PP_Newton.volume_flow();
+		cout << Q*3600 << endl;
 		return Q;
 	}
 
@@ -251,6 +252,7 @@ TEST(Block_2, Task_PP) {
 	Oil_parameters oil_parameters_PP = { 870, 15e-6, 5e6, 0.8e6 };
 	double Q = solver_PP(pipiline_parameters_PP, oil_parameters_PP);
 	double abs_error = 7;
+	cout << Q * 3600 << endl;
 	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }
 
@@ -259,7 +261,7 @@ TEST(Block_2, Task_PP_Newton) {
 	Pipiline_parameters pipiline_parameters_PP_Newton = { 0.720, 0.010, 50, 100, 0.00015, 80000 };
 	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Newton
 	Oil_parameters oil_parameters_PP_Newton = { 870, 15e-6, 5e6, 0.8e6 };
-	double Q = solver_PP_Newton(pipiline_parameters_PP_Newton, oil_parameters_PP_Newton);
+  	double Q = solver_PP_Newton(pipiline_parameters_PP_Newton, oil_parameters_PP_Newton);
 	double abs_error = 1;
 	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }

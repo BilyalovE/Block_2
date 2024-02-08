@@ -1,83 +1,83 @@
-#pragma once
+п»ї#pragma once
 #include "struct.h"
 #include "const.h"
 #include <cmath>
 //#include "stationary_models.cpp"
 
-/// @brief Bernoulli_equation - класс для решения задач из блока 2 - Реализация стационарных моделей 
-/// с прицелом на квазистационар (Уравнение Бернулли)
+/// @brief Bernoulli_equation - РєР»Р°СЃСЃ РґР»СЏ СЂРµС€РµРЅРёСЏ Р·Р°РґР°С‡ РёР· Р±Р»РѕРєР° 2 - Р РµР°Р»РёР·Р°С†РёСЏ СЃС‚Р°С†РёРѕРЅР°СЂРЅС‹С… РјРѕРґРµР»РµР№ 
+/// СЃ РїСЂРёС†РµР»РѕРј РЅР° РєРІР°Р·РёСЃС‚Р°С†РёРѕРЅР°СЂ (РЈСЂР°РІРЅРµРЅРёРµ Р‘РµСЂРЅСѓР»Р»Рё)
 class Bernoulli_equation
 {
-	// Поля класса
+	// РџРѕР»СЏ РєР»Р°СЃСЃР°
 
-	// m_pipiline_parameters - структура парметров трубопровода
+	// m_pipiline_parameters - СЃС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР°
 	Pipiline_parameters m_pipiline_parameters;
-	// m_oil_parameters - структура парметров нефти
+	// m_oil_parameters - СЃС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ РЅРµС„С‚Рё
 	Oil_parameters m_oil_parameters;
-	// m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
+	// m_hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРµ_СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ (lambda)
 	double m_hydraulic_resistance;
-	// m_v - cкорость течения нефти [м/с]
+	// m_v - cРєРѕСЂРѕСЃС‚СЊ С‚РµС‡РµРЅРёСЏ РЅРµС„С‚Рё [Рј/СЃ]
 	double m_v;
-	// m_d - внутренний диаметр трубы [м]
+	// m_d - РІРЅСѓС‚СЂРµРЅРЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ [Рј]
 	double m_d;
-	// m_relative_roughness - oтносительная эквивалентная шероховатость(e)
+	// m_relative_roughness - oС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ СЌРєРІРёРІР°Р»РµРЅС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ(e)
 	double m_relative_roughness;
-	// m_Re - число Рейнольдса
+	// m_Re - С‡РёСЃР»Рѕ Р РµР№РЅРѕР»СЊРґСЃР°
 	double m_Re;
-	// m_Q - объемный расход [м^3/c]
+	// m_Q - РѕР±СЉРµРјРЅС‹Р№ СЂР°СЃС…РѕРґ [Рј^3/c]
 	double m_Q;
-	// m_p0 - давление в начале участка нефтепровода [Па]
+	// m_p0 - РґР°РІР»РµРЅРёРµ РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР° [РџР°]
 	double m_p0;
 
 public:
-	/// @brief конструткор класса по умолчанию Bernoulli_equation
+	/// @brief РєРѕРЅСЃС‚СЂСѓС‚РєРѕСЂ РєР»Р°СЃСЃР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ Bernoulli_equation
 	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
 
-	/// @brief конструткор класса Bernoulli_equation
+	/// @brief РєРѕРЅСЃС‚СЂСѓС‚РєРѕСЂ РєР»Р°СЃСЃР° Bernoulli_equation
 	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
 		double hydraulic_resistance, double v, double d);
 
 	void setter1(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
 
-	/// @brief setter - сеттер конструтора Bernoulli_equation
-	/// @param pipiline_parameters - труктура парметров трубопровода
-	/// @param oil_parameters - структура парметров нефти
-	/// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
-	/// @param v - cкорость течения нефти [м/с]
-	/// @param d - внутренний диаметр трубы [м]
+	/// @brief setter - СЃРµС‚С‚РµСЂ РєРѕРЅСЃС‚СЂСѓС‚РѕСЂР° Bernoulli_equation
+	/// @param pipiline_parameters - С‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР°
+	/// @param oil_parameters - СЃС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ РЅРµС„С‚Рё
+	/// @param hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРµ_СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ (lambda)
+	/// @param v - cРєРѕСЂРѕСЃС‚СЊ С‚РµС‡РµРЅРёСЏ РЅРµС„С‚Рё [Рј/СЃ]
+	/// @param d - РІРЅСѓС‚СЂРµРЅРЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ [Рј]
 	void setter2(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
 		double& hydraulic_resistance, const double& v, double& d);
 
 
 
-	/// @brief pressure_p0 - Метод, рассчитывающий давление в начале участка нефтепровода [Па]
-	/// @return m_p0 - давление в начале участка нефтепровода [Па]
+	/// @brief pressure_p0 - РњРµС‚РѕРґ, СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‰РёР№ РґР°РІР»РµРЅРёРµ РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР° [РџР°]
+	/// @return m_p0 - РґР°РІР»РµРЅРёРµ РІ РЅР°С‡Р°Р»Рµ СѓС‡Р°СЃС‚РєР° РЅРµС„С‚РµРїСЂРѕРІРѕРґР° [РџР°]
 	double pressure_p0();
 
 
 	double internal_diameter();
 
-	/// @brief  relative_roughness - метод, рассчитывающий относительную эквивалентная шероховатость
-	/// @return relative_roughness - oтносительная эквивалентная шероховатость (e)
+	/// @brief  relative_roughness - РјРµС‚РѕРґ, СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‰РёР№ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅСѓСЋ СЌРєРІРёРІР°Р»РµРЅС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ
+	/// @return relative_roughness - oС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ СЌРєРІРёРІР°Р»РµРЅС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ (e)
 	double relative_roughness();
 
-	/// @brief reynolds_number - метод, рассчитывающий число Рейнольдса, где nu переведено в систему СИ
-	/// @return m_Re - число Рейнольдса
+	/// @brief reynolds_number - РјРµС‚РѕРґ, СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‰РёР№ С‡РёСЃР»Рѕ Р РµР№РЅРѕР»СЊРґСЃР°, РіРґРµ nu РїРµСЂРµРІРµРґРµРЅРѕ РІ СЃРёСЃС‚РµРјСѓ РЎР
+	/// @return m_Re - С‡РёСЃР»Рѕ Р РµР№РЅРѕР»СЊРґСЃР°
 	double reynolds_number();
 
 	double reynolds_number(double m_d);
 
-	/// @brief speed_flow - метод, рассчитывающий скорость по заданному расходу нефти
-	/// @return m_v - cкорость течения нефти [м/с]
+	/// @brief speed_flow - РјРµС‚РѕРґ, СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‰РёР№ СЃРєРѕСЂРѕСЃС‚СЊ РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ СЂР°СЃС…РѕРґСѓ РЅРµС„С‚Рё
+	/// @return m_v - cРєРѕСЂРѕСЃС‚СЊ С‚РµС‡РµРЅРёСЏ РЅРµС„С‚Рё [Рј/СЃ]
 	double speed_flow();
 
-	/// @brief speed_pressure - метод, рассчитывающий скорость по давлению в задаче PP
-	/// @return v - cкорость течения нефти в системе СИ	
+	/// @brief speed_pressure - РјРµС‚РѕРґ, СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‰РёР№ СЃРєРѕСЂРѕСЃС‚СЊ РїРѕ РґР°РІР»РµРЅРёСЋ РІ Р·Р°РґР°С‡Рµ PP
+	/// @return v - cРєРѕСЂРѕСЃС‚СЊ С‚РµС‡РµРЅРёСЏ РЅРµС„С‚Рё РІ СЃРёСЃС‚РµРјРµ РЎР	
 	double speed_pressure();
 	double speed_pressure(double m_hydraulic_resistance);
 
-	/// @brief volume_flow - метод, рассчитывающий объемный расход
-	/// @return m_Q - объемный расход [м^3/c]
+	/// @brief volume_flow - РјРµС‚РѕРґ, СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‰РёР№ РѕР±СЉРµРјРЅС‹Р№ СЂР°СЃС…РѕРґ
+	/// @return m_Q - РѕР±СЉРµРјРЅС‹Р№ СЂР°СЃС…РѕРґ [Рј^3/c]
 	double volume_flow();
 	double volume_flow(double m_d);
 };

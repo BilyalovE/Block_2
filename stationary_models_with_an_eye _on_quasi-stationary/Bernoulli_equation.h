@@ -4,80 +4,80 @@
 #include <cmath>
 //#include "stationary_models.cpp"
 
-/// @brief Bernoulli_equation - класс для решения задач из блока 2 - Реализация стационарных моделей 
-/// с прицелом на квазистационар (Уравнение Бернулли)
+/// @brief Bernoulli_equation - ╨║╨╗╨░╤Б╤Б ╨┤╨╗╤П ╤А╨╡╤И╨╡╨╜╨╕╤П ╨╖╨░╨┤╨░╤З ╨╕╨╖ ╨▒╨╗╨╛╨║╨░ 2 - ╨а╨╡╨░╨╗╨╕╨╖╨░╤Ж╨╕╤П ╤Б╤В╨░╤Ж╨╕╨╛╨╜╨░╤А╨╜╤Л╤Е ╨╝╨╛╨┤╨╡╨╗╨╡╨╣ 
+/// ╤Б ╨┐╤А╨╕╤Ж╨╡╨╗╨╛╨╝ ╨╜╨░ ╨║╨▓╨░╨╖╨╕╤Б╤В╨░╤Ж╨╕╨╛╨╜╨░╤А (╨г╤А╨░╨▓╨╜╨╡╨╜╨╕╨╡ ╨С╨╡╤А╨╜╤Г╨╗╨╗╨╕)
 class Bernoulli_equation
 {
-	// Поля класса
+	// ╨Я╨╛╨╗╤П ╨║╨╗╨░╤Б╤Б╨░
 
-	// m_pipiline_parameters - структура парметров трубопровода
+	// m_pipiline_parameters - ╤Б╤В╤А╤Г╨║╤В╤Г╤А╨░ ╨┐╨░╤А╨╝╨╡╤В╤А╨╛╨▓ ╤В╤А╤Г╨▒╨╛╨┐╤А╨╛╨▓╨╛╨┤╨░
 	Pipiline_parameters m_pipiline_parameters;
-	// m_oil_parameters - структура парметров нефти
+	// m_oil_parameters - ╤Б╤В╤А╤Г╨║╤В╤Г╤А╨░ ╨┐╨░╤А╨╝╨╡╤В╤А╨╛╨▓ ╨╜╨╡╤Д╤В╨╕
 	Oil_parameters m_oil_parameters;
-	// m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
+	// m_hydraulic_resistance - ╨║╨╛╤Н╤Д╤Д╨╕╤Ж╨╕╨╡╨╜╤В ╨│╨╕╨┤╤А╨░╨▓╨╗╨╕╤З╨╡╤Б╨║╨╛╨╡_╤Б╨╛╨┐╤А╨╛╤В╨╕╨▓╨╗╨╡╨╜╨╕╨╡ (lambda)
 	double m_hydraulic_resistance;
-	// m_v - cкорость течения нефти [м/с]
+	// m_v - c╨║╨╛╤А╨╛╤Б╤В╤М ╤В╨╡╤З╨╡╨╜╨╕╤П ╨╜╨╡╤Д╤В╨╕ [╨╝/╤Б]
 	double m_v;
-	// m_d - внутренний диаметр трубы [м]
+	// m_d - ╨▓╨╜╤Г╤В╤А╨╡╨╜╨╜╨╕╨╣ ╨┤╨╕╨░╨╝╨╡╤В╤А ╤В╤А╤Г╨▒╤Л [╨╝]
 	double m_d;
-	// m_relative_roughness - oтносительная эквивалентная шероховатость(e)
+	// m_relative_roughness - o╤В╨╜╨╛╤Б╨╕╤В╨╡╨╗╤М╨╜╨░╤П ╤Н╨║╨▓╨╕╨▓╨░╨╗╨╡╨╜╤В╨╜╨░╤П ╤И╨╡╤А╨╛╤Е╨╛╨▓╨░╤В╨╛╤Б╤В╤М(e)
 	double m_relative_roughness;
-	// m_Re - число Рейнольдса
+	// m_Re - ╤З╨╕╤Б╨╗╨╛ ╨а╨╡╨╣╨╜╨╛╨╗╤М╨┤╤Б╨░
 	double m_Re;
-	// m_Q - объемный расход [м^3/c]
+	// m_Q - ╨╛╨▒╤К╨╡╨╝╨╜╤Л╨╣ ╤А╨░╤Б╤Е╨╛╨┤ [╨╝^3/c]
 	double m_Q;
-	// m_p0 - давление в начале участка нефтепровода [Па]
+	// m_p0 - ╨┤╨░╨▓╨╗╨╡╨╜╨╕╨╡ ╨▓ ╨╜╨░╤З╨░╨╗╨╡ ╤Г╤З╨░╤Б╤В╨║╨░ ╨╜╨╡╤Д╤В╨╡╨┐╤А╨╛╨▓╨╛╨┤╨░ [╨Я╨░]
 	double m_p0;
 
 public:
-	/// @brief конструткор класса по умолчанию Bernoulli_equation
+	/// @brief ╨║╨╛╨╜╤Б╤В╤А╤Г╤В╨║╨╛╤А ╨║╨╗╨░╤Б╤Б╨░ ╨┐╨╛ ╤Г╨╝╨╛╨╗╤З╨░╨╜╨╕╤О Bernoulli_equation
 	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
 
-	/// @brief конструткор класса Bernoulli_equation
+	/// @brief ╨║╨╛╨╜╤Б╤В╤А╤Г╤В╨║╨╛╤А ╨║╨╗╨░╤Б╤Б╨░ Bernoulli_equation
 	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
 		double hydraulic_resistance, double v, double d);
 
 	void setter1(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
 
-	/// @brief setter - сеттер конструтора Bernoulli_equation
-	/// @param pipiline_parameters - труктура парметров трубопровода
-	/// @param oil_parameters - структура парметров нефти
-	/// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
-	/// @param v - cкорость течения нефти [м/с]
-	/// @param d - внутренний диаметр трубы [м]
+	/// @brief setter - ╤Б╨╡╤В╤В╨╡╤А ╨║╨╛╨╜╤Б╤В╤А╤Г╤В╨╛╤А╨░ Bernoulli_equation
+	/// @param pipiline_parameters - ╤В╤А╤Г╨║╤В╤Г╤А╨░ ╨┐╨░╤А╨╝╨╡╤В╤А╨╛╨▓ ╤В╤А╤Г╨▒╨╛╨┐╤А╨╛╨▓╨╛╨┤╨░
+	/// @param oil_parameters - ╤Б╤В╤А╤Г╨║╤В╤Г╤А╨░ ╨┐╨░╤А╨╝╨╡╤В╤А╨╛╨▓ ╨╜╨╡╤Д╤В╨╕
+	/// @param hydraulic_resistance - ╨║╨╛╤Н╤Д╤Д╨╕╤Ж╨╕╨╡╨╜╤В ╨│╨╕╨┤╤А╨░╨▓╨╗╨╕╤З╨╡╤Б╨║╨╛╨╡_╤Б╨╛╨┐╤А╨╛╤В╨╕╨▓╨╗╨╡╨╜╨╕╨╡ (lambda)
+	/// @param v - c╨║╨╛╤А╨╛╤Б╤В╤М ╤В╨╡╤З╨╡╨╜╨╕╤П ╨╜╨╡╤Д╤В╨╕ [╨╝/╤Б]
+	/// @param d - ╨▓╨╜╤Г╤В╤А╨╡╨╜╨╜╨╕╨╣ ╨┤╨╕╨░╨╝╨╡╤В╤А ╤В╤А╤Г╨▒╤Л [╨╝]
 	void setter2(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
 		double& hydraulic_resistance, const double& v, double& d);
 
 
 
-	/// @brief pressure_p0 - Метод, рассчитывающий давление в начале участка нефтепровода [Па]
-	/// @return m_p0 - давление в начале участка нефтепровода [Па]
+	/// @brief pressure_p0 - ╨Ь╨╡╤В╨╛╨┤, ╤А╨░╤Б╤Б╤З╨╕╤В╤Л╨▓╨░╤О╤Й╨╕╨╣ ╨┤╨░╨▓╨╗╨╡╨╜╨╕╨╡ ╨▓ ╨╜╨░╤З╨░╨╗╨╡ ╤Г╤З╨░╤Б╤В╨║╨░ ╨╜╨╡╤Д╤В╨╡╨┐╤А╨╛╨▓╨╛╨┤╨░ [╨Я╨░]
+	/// @return m_p0 - ╨┤╨░╨▓╨╗╨╡╨╜╨╕╨╡ ╨▓ ╨╜╨░╤З╨░╨╗╨╡ ╤Г╤З╨░╤Б╤В╨║╨░ ╨╜╨╡╤Д╤В╨╡╨┐╤А╨╛╨▓╨╛╨┤╨░ [╨Я╨░]
 	double pressure_p0();
 
 
 	double internal_diameter();
 
-	/// @brief  relative_roughness - метод, рассчитывающий относительную эквивалентная шероховатость
-	/// @return relative_roughness - oтносительная эквивалентная шероховатость (e)
+	/// @brief  relative_roughness - ╨╝╨╡╤В╨╛╨┤, ╤А╨░╤Б╤Б╤З╨╕╤В╤Л╨▓╨░╤О╤Й╨╕╨╣ ╨╛╤В╨╜╨╛╤Б╨╕╤В╨╡╨╗╤М╨╜╤Г╤О ╤Н╨║╨▓╨╕╨▓╨░╨╗╨╡╨╜╤В╨╜╨░╤П ╤И╨╡╤А╨╛╤Е╨╛╨▓╨░╤В╨╛╤Б╤В╤М
+	/// @return relative_roughness - o╤В╨╜╨╛╤Б╨╕╤В╨╡╨╗╤М╨╜╨░╤П ╤Н╨║╨▓╨╕╨▓╨░╨╗╨╡╨╜╤В╨╜╨░╤П ╤И╨╡╤А╨╛╤Е╨╛╨▓╨░╤В╨╛╤Б╤В╤М (e)
 	double relative_roughness();
 
-	/// @brief reynolds_number - метод, рассчитывающий число Рейнольдса, где nu переведено в систему СИ
-	/// @return m_Re - число Рейнольдса
+	/// @brief reynolds_number - ╨╝╨╡╤В╨╛╨┤, ╤А╨░╤Б╤Б╤З╨╕╤В╤Л╨▓╨░╤О╤Й╨╕╨╣ ╤З╨╕╤Б╨╗╨╛ ╨а╨╡╨╣╨╜╨╛╨╗╤М╨┤╤Б╨░, ╨│╨┤╨╡ nu ╨┐╨╡╤А╨╡╨▓╨╡╨┤╨╡╨╜╨╛ ╨▓ ╤Б╨╕╤Б╤В╨╡╨╝╤Г ╨б╨Ш
+	/// @return m_Re - ╤З╨╕╤Б╨╗╨╛ ╨а╨╡╨╣╨╜╨╛╨╗╤М╨┤╤Б╨░
 	double reynolds_number();
 
 	double reynolds_number(double m_d);
 
-	/// @brief speed_flow - метод, рассчитывающий скорость по заданному расходу нефти
-	/// @return m_v - cкорость течения нефти [м/с]
+	/// @brief speed_flow - ╨╝╨╡╤В╨╛╨┤, ╤А╨░╤Б╤Б╤З╨╕╤В╤Л╨▓╨░╤О╤Й╨╕╨╣ ╤Б╨║╨╛╤А╨╛╤Б╤В╤М ╨┐╨╛ ╨╖╨░╨┤╨░╨╜╨╜╨╛╨╝╤Г ╤А╨░╤Б╤Е╨╛╨┤╤Г ╨╜╨╡╤Д╤В╨╕
+	/// @return m_v - c╨║╨╛╤А╨╛╤Б╤В╤М ╤В╨╡╤З╨╡╨╜╨╕╤П ╨╜╨╡╤Д╤В╨╕ [╨╝/╤Б]
 	double speed_flow();
 
-	/// @brief speed_pressure - метод, рассчитывающий скорость по давлению в задаче PP
-	/// @return v - cкорость течения нефти в системе СИ	
+	/// @brief speed_pressure - ╨╝╨╡╤В╨╛╨┤, ╤А╨░╤Б╤Б╤З╨╕╤В╤Л╨▓╨░╤О╤Й╨╕╨╣ ╤Б╨║╨╛╤А╨╛╤Б╤В╤М ╨┐╨╛ ╨┤╨░╨▓╨╗╨╡╨╜╨╕╤О ╨▓ ╨╖╨░╨┤╨░╤З╨╡ PP
+	/// @return v - c╨║╨╛╤А╨╛╤Б╤В╤М ╤В╨╡╤З╨╡╨╜╨╕╤П ╨╜╨╡╤Д╤В╨╕ ╨▓ ╤Б╨╕╤Б╤В╨╡╨╝╨╡ ╨б╨Ш	
 	double speed_pressure();
 	double speed_pressure(double m_hydraulic_resistance);
 
-	/// @brief volume_flow - метод, рассчитывающий объемный расход
-	/// @return m_Q - объемный расход [м^3/c]
+	/// @brief volume_flow - ╨╝╨╡╤В╨╛╨┤, ╤А╨░╤Б╤Б╤З╨╕╤В╤Л╨▓╨░╤О╤Й╨╕╨╣ ╨╛╨▒╤К╨╡╨╝╨╜╤Л╨╣ ╤А╨░╤Б╤Е╨╛╨┤
+	/// @return m_Q - ╨╛╨▒╤К╨╡╨╝╨╜╤Л╨╣ ╤А╨░╤Б╤Е╨╛╨┤ [╨╝^3/c]
 	double volume_flow();
 	double volume_flow(double m_d);
 };

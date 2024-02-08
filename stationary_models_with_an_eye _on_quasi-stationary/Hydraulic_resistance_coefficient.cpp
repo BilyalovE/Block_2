@@ -1,16 +1,16 @@
 
 #include "Hydraulic_resistance_coefficient.h"
-/// @brief Hydraulic_resistance_coefficient - конструктор класса по умолчанию (перегрузка)
+/// @brief Hydraulic_resistance_coefficient - РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ (РїРµСЂРµРіСЂСѓР·РєР°)
 Hydraulic_resistance_coefficient::Hydraulic_resistance_coefficient() {
 }
-/// @brief Hydraulic_resistance_coefficient - конструктор класса
-/// @param Re - число Рейнольдса (Re)
-/// @param m_relative_roughness - относительная эквивалентная шероховатость (e)
+/// @brief Hydraulic_resistance_coefficient - РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°
+/// @param Re - С‡РёСЃР»Рѕ Р РµР№РЅРѕР»СЊРґСЃР° (Re)
+/// @param m_relative_roughness - РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ СЌРєРІРёРІР°Р»РµРЅС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ (e)
 Hydraulic_resistance_coefficient::Hydraulic_resistance_coefficient(double Re, double relative_roughness) {
 	setter(Re, relative_roughness);
 }
 
-// Методы класса
+// РњРµС‚РѕРґС‹ РєР»Р°СЃСЃР°
 
 void Hydraulic_resistance_coefficient::setter(double Re, double relative_roughness)
 {
@@ -38,15 +38,15 @@ double Hydraulic_resistance_coefficient::altschul_formula()
 
 double Hydraulic_resistance_coefficient::calculation_hydraulic_resistance_coefficient()
 {
-	// Формула Стокса
+	// Р¤РѕСЂРјСѓР»Р° РЎС‚РѕРєСЃР°
 	if (m_Re < 2000) {
 		m_hydraulic_resistance = this->stokes_formula();
 	}
-	// Формула Блазиуса
+	// Р¤РѕСЂРјСѓР»Р° Р‘Р»Р°Р·РёСѓСЃР°
 	else if (m_Re >= 2000 && m_Re <= 4000) {
 		m_hydraulic_resistance = this->blasius_formula();
 	}
-	// Формула Альтшуля
+	// Р¤РѕСЂРјСѓР»Р° РђР»СЊС‚С€СѓР»СЏ
 	else {
 		m_hydraulic_resistance = this->altschul_formula();
 	}

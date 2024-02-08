@@ -1,21 +1,21 @@
 
 #include "Bernoulli_equation.h"
 
-/// @brief Bernoulli_equation - конструктор класса по умолчанию
-/// @param pipiline_parameters - cтруктура парметров трубопровода
-/// @param oil_parameters - структура парметров нефти
+/// @brief Bernoulli_equation - РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+/// @param pipiline_parameters - cС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР°
+/// @param oil_parameters - СЃС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ РЅРµС„С‚Рё
 Bernoulli_equation::Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters)
 {
 	setter1(pipiline_parameters, oil_parameters);
 
 }
 
-/// @brief Bernoulli_equation - конструктор класса
-/// @param pipiline_parameters - труктура парметров трубопровода
-/// @param oil_parameters - структура парметров нефти
-/// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
-/// @param v - cкорость течения нефти [м/с]
-/// @param d - внутренний диаметр трубы [м]
+/// @brief Bernoulli_equation - РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°
+/// @param pipiline_parameters - С‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ С‚СЂСѓР±РѕРїСЂРѕРІРѕРґР°
+/// @param oil_parameters - СЃС‚СЂСѓРєС‚СѓСЂР° РїР°СЂРјРµС‚СЂРѕРІ РЅРµС„С‚Рё
+/// @param hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРµ_СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ (lambda)
+/// @param v - cРєРѕСЂРѕСЃС‚СЊ С‚РµС‡РµРЅРёСЏ РЅРµС„С‚Рё [Рј/СЃ]
+/// @param d - РІРЅСѓС‚СЂРµРЅРЅРёР№ РґРёР°РјРµС‚СЂ С‚СЂСѓР±С‹ [Рј]
 Bernoulli_equation::Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
 	double hydraulic_resistance, double v, double d)
 
@@ -24,7 +24,7 @@ Bernoulli_equation::Bernoulli_equation(const Pipiline_parameters& pipiline_param
 
 }
 
-// Методы класса
+// РњРµС‚РѕРґС‹ РєР»Р°СЃСЃР°
 void Bernoulli_equation::setter1(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters)
 {
 	m_pipiline_parameters = pipiline_parameters;

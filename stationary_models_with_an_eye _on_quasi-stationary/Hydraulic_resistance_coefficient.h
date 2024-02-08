@@ -2,44 +2,44 @@
 #include <cmath>
 
 
-/// @brief Hydraulic_resistance_coefficient - класс для определения гидравлического сопротивления 
-/// в зависимости от числа рейнольдса
+/// @brief Hydraulic_resistance_coefficient - РєР»Р°СЃСЃ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ 
+/// РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‡РёСЃР»Р° СЂРµР№РЅРѕР»СЊРґСЃР°
 class  Hydraulic_resistance_coefficient {
 
-	// Поля класса
-	// m_Re -  число рейнольдса (Re)
+	// РџРѕР»СЏ РєР»Р°СЃСЃР°
+	// m_Re -  С‡РёСЃР»Рѕ СЂРµР№РЅРѕР»СЊРґСЃР° (Re)
 	double m_Re;
-	// m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
+	// m_hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРµ_СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ (lambda)
 	double m_hydraulic_resistance;
-	// m_relative_roughness - относительная эквивалентная шероховатость (e)
+	// m_relative_roughness - РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ СЌРєРІРёРІР°Р»РµРЅС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ (e)
 	double m_relative_roughness;
 
 public:
-	// Конструктор класса Hydraulic_resistance_coefficient по умолчанию (перегрузка)
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР° Hydraulic_resistance_coefficient РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ (РїРµСЂРµРіСЂСѓР·РєР°)
 	Hydraulic_resistance_coefficient();
 
-	// Конструктор класса Hydraulic_resistance_coefficient
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР° Hydraulic_resistance_coefficient
 	Hydraulic_resistance_coefficient(double Re, double relative_roughness);
 
-	/// @brief setter - сеттер конструктора класса
-	/// @param Re - число рейнольдса
-	/// @param relative_roughness - относительная эквивалентная шероховатость (e)
+	/// @brief setter - СЃРµС‚С‚РµСЂ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР° РєР»Р°СЃСЃР°
+	/// @param Re - С‡РёСЃР»Рѕ СЂРµР№РЅРѕР»СЊРґСЃР°
+	/// @param relative_roughness - РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ СЌРєРІРёРІР°Р»РµРЅС‚РЅР°СЏ С€РµСЂРѕС…РѕРІР°С‚РѕСЃС‚СЊ (e)
 	void setter(double Re, double relative_roughness);
 
-	/// @brief Формула Стокса
-	/// @return m_hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
+	/// @brief Р¤РѕСЂРјСѓР»Р° РЎС‚РѕРєСЃР°
+	/// @return m_hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ (lambda)
 	double stokes_formula();
 
-	/// @brief Формула Блазиуса
-	/// @return m_hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
+	/// @brief Р¤РѕСЂРјСѓР»Р° Р‘Р»Р°Р·РёСѓСЃР°
+	/// @return m_hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ (lambda)
 	double blasius_formula();
 
-	/// @brief Формула Альтшуля
-	/// @return m_hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
+	/// @brief Р¤РѕСЂРјСѓР»Р° РђР»СЊС‚С€СѓР»СЏ
+	/// @return m_hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ (lambda)
 	double altschul_formula();
 
-	/// @brief Автоматический рассчет коэффициента гидравлического сопротивления по переданному числу рейнольдса
-	/// @return m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
+	/// @brief РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ СЂР°СЃСЃС‡РµС‚ РєРѕСЌС„С„РёС†РёРµРЅС‚Р° РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРіРѕ СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёСЏ РїРѕ РїРµСЂРµРґР°РЅРЅРѕРјСѓ С‡РёСЃР»Сѓ СЂРµР№РЅРѕР»СЊРґСЃР°
+	/// @return m_hydraulic_resistance - РєРѕСЌС„С„РёС†РёРµРЅС‚ РіРёРґСЂР°РІР»РёС‡РµСЃРєРѕРµ_СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ (lambda)
 	double calculation_hydraulic_resistance_coefficient();
 
 

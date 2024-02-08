@@ -116,7 +116,7 @@ double solver_PP(const Pipiline_parameters& pipiline_parameters_PP, const Oil_pa
 	// labmda_current - гидравлическое сопротивление на текущем приближении
 	double labmda_current = 0.02;
 	// eps - допустимая погрешность
-	double eps = 0.00005;
+	double eps = 0.0005;
 	// Объявляем объект task_PP класса Bernoulli_equation
 	Bernoulli_equation task_PP(pipiline_parameters_PP, oil_parameters_PP);
 	// internal_diameter - внутренний диаметр трубы[м]
@@ -130,13 +130,15 @@ double solver_PP(const Pipiline_parameters& pipiline_parameters_PP, const Oil_pa
 	// Объявляем объект lambda_PP класса Hydraulic_resistance_coefficient 
 	Hydraulic_resistance_coefficient lambda_PP;
 	while (abs(labmda_previous - labmda_current) >= eps) {
+		//v = task_PP.speed_pressure();
 		// Re - число Рейнольдса
 		double Re = task_PP.reynolds_number();
 		labmda_previous = labmda_current;
 		lambda_PP.setter(Re, relative_roughnesse);
 		labmda_current = lambda_PP.calculation_hydraulic_resistance_coefficient();
+		labmda_current = hydraulic_resistance_isaev(Re, relative_roughnesse);
 		task_PP.setter2(pipiline_parameters_PP, oil_parameters_PP, labmda_current, initial_v, internal_diameter);
-		v = task_PP.speed_pressure();
+		//v = task_PP.speed_pressure();
 	}
 	double Q = task_PP.volume_flow();
 	return Q;
@@ -247,7 +249,7 @@ TEST(Block_2, Task_QP_Iterative_Eyler) {
 
 TEST(Block_2, Task_PP) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipiline_parameters_PP
-	Pipiline_parameters pipiline_parameters_PP = { 0.720, 0.010, 50, 100, 0.00015, 80000 };
+	Pipiline_parameters pipiline_parameters_PP = { 0.720, 0.010, 50, 100, 0.000015, 80000 };
 	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP
 	Oil_parameters oil_parameters_PP = { 870, 15e-6, 5e6, 0.8e6 };
 	double Q = solver_PP(pipiline_parameters_PP, oil_parameters_PP);

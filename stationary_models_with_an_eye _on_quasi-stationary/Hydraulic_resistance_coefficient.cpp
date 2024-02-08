@@ -20,7 +20,7 @@ void Hydraulic_resistance_coefficient::setter(double Re, double relative_roughne
 
 double Hydraulic_resistance_coefficient::stokes_formula()
 {
-	double m_hydraulic_resistance = 64 / m_Re;
+	double m_hydraulic_resistance = 64.0 / m_Re;
 	return m_hydraulic_resistance;
 }
 

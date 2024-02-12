@@ -41,4 +41,7 @@ public:
 	/// @brief Автоматический рассчет коэффициента гидравлического сопротивления по переданному числу рейнольдса
 	/// @return m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 	double calculation_hydraulic_resistance_coefficient();
+
+
+
 };

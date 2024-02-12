@@ -6,7 +6,7 @@ Task_QP_Eyler::Task_QP_Eyler(const Pipiline_parameters& pipiline_parameters, con
 	setter(pipiline_parameters, oil_parameters, tw, n, h, internal_diameter, p_previous);
 }
 
-// Методы класса
+// РњРµС‚РѕРґС‹ РєР»Р°СЃСЃР°
 
 void Task_QP_Eyler::setter(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
 	double tw, int n, double h, double internal_diameter, double pressure_previous) {
@@ -20,7 +20,7 @@ void Task_QP_Eyler::setter(const Pipiline_parameters& pipiline_parameters, const
 }
 double Task_QP_Eyler::solver_eyler()
 {
-	// pressure_current - давление на текущей итерации(рассчитанное значение) [Па]
+	// pressure_current - РґР°РІР»РµРЅРёРµ РЅР° С‚РµРєСѓС‰РµР№ РёС‚РµСЂР°С†РёРё(СЂР°СЃСЃС‡РёС‚Р°РЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ) [РџР°]
 	double pressure_current;
 	for (size_t i = 1; i <= n; i++) {
 		pressure_current = (pressure_previous - h * (-4 * tw / internal_diameter - oil_parameters.ro * k_g * (pipiline_parameters.zl - pipiline_parameters.z0) / (n - 1) / h));

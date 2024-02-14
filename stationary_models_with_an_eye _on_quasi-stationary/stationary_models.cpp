@@ -203,7 +203,7 @@ public:
 		fixed_solver_result_t<1> result;
 		// Решение системы нелинейныйх уравнений <2> с помощью решателя Ньютона - Рафсона
 		// m_initial_speed_approximation - Начальное приближение
-		m_initial_speed_approximation = 0.4;
+		m_initial_speed_approximation = 0;
 		fixed_newton_raphson<1>::solve_dense(*this, { m_initial_speed_approximation }, parameters, &result);
 		// Объявляем объект task_PP_Newton класса Bernoulli_equation
 		Bernoulli_equation task_PP_Newton(m_pipiline_parameters_PP_Newton, m_oil_parameters_PP_Newton, 0, result.argument, 0.7);

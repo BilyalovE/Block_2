@@ -142,6 +142,7 @@
     <ClCompile Include="Hydraulic_resistance_coefficient.cpp" />
     <ClCompile Include="Bernoulli_equation.cpp" />
     <ClCompile Include="stationary_models.cpp" />
+    <ClCompile Include="Task_PP_Newton.cpp" />
     <ClCompile Include="Task_QP_Eyler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="struct.h" />
     <ClInclude Include="Hydraulic_resistance_coefficient.h" />
     <ClInclude Include="Bernoulli_equation.h" />
+    <ClInclude Include="Task_PP_Newton.h" />
     <ClInclude Include="Task_QP_Eyler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

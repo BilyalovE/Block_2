@@ -1,20 +1,14 @@
 ﻿/*!
 	\ brief Блок 2 - Реализация стационарных моделей с прицелом на квазистационар
 	\ author Bilyalov Eldar
-	\ version 4 - Решение задач, рефакторинг
+	\ version 4 - Решение задач, рефакторинг, многофайловый проект 
 	\date 16.02.2024
 */
 #pragma once
 // Подключаем необходимые библиотеки
 #include <iostream>
-#include <cmath>
-#include <locale.h>
-#include <vector>
 #include "gtest/gtest.h"
-#include <iomanip>
-#include <fixed/fixed.h>
-#include <pde_solvers/pde_solvers.h>
-#include <fixed/fixed_nonlinear_solver.h>
+
 
 // Подключение класса для определения гидравлического сопротивления 
 #include "Hydraulic_resistance_coefficient.h"
@@ -25,8 +19,8 @@
 #include "Task_QP_Eyler.h"
 #include "struct.h"
 #include "const.h"
-
-//#include "Task_PP_Newton.h"
+// Подключение класса для решения задачи PP методом Ньютона-Рафсона
+#include "Task_PP_Newton.h"
 
 // Используем пространство имен std и pde_solvers
 using namespace std;
@@ -144,80 +138,13 @@ double solver_PP(const Pipeline_parameters& pipeline_parameters_PP, const Oil_pa
 }
 
 
-/// @brief PP_solver_newton - класс основанный на решателе методом Ньютона-Рафсона для задачи PP
-// <1> - Размерность системы уравнений - скалярный случай
-class PP_solver_newton : public fixed_system_t<1>
-{
-private:
-	// Объявление полей класса
-
-	// pipeline_parameters_PP_Newton - поле класса (структура с именем Pipeline_parameters для переменной pipeline_parameters_PP_Newton)
-	Pipeline_parameters m_pipeline_parameters_PP_Newton;
-	// m_oil_parameters_PP_Newton - поле класса (структура с именем Oil_parameters для переменной oil_parameters_PP_Newton)
-	Oil_parameters m_oil_parameters_PP_Newton;
-	// m_hydraulic_resistance - поле класса - коэффициент гидравлического сопротивления
-	double m_hydraulic_resistance;
-	// m_d - поле класса - внутренний диаметр трубы[м]
-	double m_d;
-	// m_initial_speed_approximation - начальное приближение скорости течения нефти, [м/с]
-	double m_initial_speed_approximation;
-
-	using fixed_system_t<1>::var_type;
-
-public:
-	/// @brief PP_solver_newton - конструктор класса для задачи PP методом Ньютона-Рафсона
-	PP_solver_newton(Pipeline_parameters pipeline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton) {
-		m_pipeline_parameters_PP_Newton = pipeline_parameters_PP_Newton;
-		m_oil_parameters_PP_Newton = oil_parameters_PP_Newton;
-	}
-	/// @brief residuals - функция невязок
-	/// @param - v - искомый параметр (скорость, [м/с])
-	var_type residuals(const var_type& v) {
-
-		// Объявляем объект task_PP_Newton класса Bernoulli_equation
-		Bernoulli_equation task_PP_Newton(m_pipeline_parameters_PP_Newton, m_oil_parameters_PP_Newton);
-		// internal_diameter - внутренний диаметр трубы [м]
-		double internal_diameter = task_PP_Newton.internal_diameter();// Re - число Рейнольдса
-		double Re = task_PP_Newton.reynolds_number(v);
-		// relative_equivalent_roughness - относительную эквивалентная шероховатость (e)
-		double relative_equivalent_roughness = task_PP_Newton.relative_roughness();
-		// hydraulic_resistance - гидравлическое_сопротивление (lambda)
-		Hydraulic_resistance_coefficient hydraulic_task_PP_Newton(Re, relative_equivalent_roughness);
-		m_hydraulic_resistance = hydraulic_task_PP_Newton.calculation_hydraulic_resistance_coefficient();
-		//m_hydraulic_resistance = hydraulic_resistance_isaev(Re, relative_equivalent_roughness);
-		// result - функция невязок
-		double result;
-		result = v - task_PP_Newton.speed_pressure(m_hydraulic_resistance);
-		return result;
-	}
-
-	double solver_newton_rafson() {
-		// Задание настроек решателя по умолчанию
-		fixed_solver_parameters_t<1, 0> parameters;
-		// Создание структуры для записи результатов расчета
-		fixed_solver_result_t<1> result;
-		// Решение системы нелинейных уравнений <2> с помощью решателя Ньютона - Рафсона
-		// m_initial_speed_approximation - Начальное приближение
-		m_initial_speed_approximation = 0.2;
-		fixed_newton_raphson<1>::solve_dense(*this, { m_initial_speed_approximation }, parameters, &result);
-		// Объявляем объект task_PP_Newton класса Bernoulli_equation
-		Bernoulli_equation task_PP_Newton(m_pipeline_parameters_PP_Newton, m_oil_parameters_PP_Newton, 0, result.argument, 0.7);
-		// Q - объемный расход[м ^ 3 / ч]
-		//cout << result.argument << endl;
-		double Q = task_PP_Newton.volume_flow();
-		//cout << Q*3600 << endl;
-		return Q;
-	}
-
-};
-
 /// @brief solver_PP_Newton - функция решения задачи PP_Newton
 /// @param Pipeline_parameters - структура параметров трубопровода
 /// @param Oil_parameters - структура параметров нефти
 /// @return Q - расход
 double solver_PP_Newton(Pipeline_parameters pipeline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton) {
 	// Создание экземпляра класса, который и будет решаемой системой
-	PP_solver_newton solver_newton(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
+	PP_solver_Newton solver_newton(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
 	double Q = solver_newton.solver_newton_rafson();
 	return Q;
 }

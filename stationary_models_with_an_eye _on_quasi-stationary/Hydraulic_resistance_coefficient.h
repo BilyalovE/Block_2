@@ -3,11 +3,11 @@
 
 
 /// @brief Hydraulic_resistance_coefficient - класс для определения гидравлического сопротивления 
-/// в зависимости от числа рейнольдса
+/// в зависимости от числа Рейнольдса
 class  Hydraulic_resistance_coefficient {
 
 	// Поля класса
-	// m_Re -  число рейнольдса (Re)
+	// m_Re -  число Рейнольдса (Re)
 	double m_Re;
 	// m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 	double m_hydraulic_resistance;
@@ -22,7 +22,7 @@ public:
 	Hydraulic_resistance_coefficient(double Re, double relative_roughness);
 
 	/// @brief setter - сеттер конструктора класса
-	/// @param Re - число рейнольдса
+	/// @param Re - число Рейнольдса
 	/// @param relative_roughness - относительная эквивалентная шероховатость (e)
 	void setter(double Re, double relative_roughness);
 
@@ -38,7 +38,7 @@ public:
 	/// @return m_hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
 	double altschul_formula();
 
-	/// @brief Автоматический рассчет коэффициента гидравлического сопротивления по переданному числу рейнольдса
+	/// @brief Автоматический расчет коэффициента гидравлического сопротивления по переданному числу Рейнольдса
 	/// @return m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 	double calculation_hydraulic_resistance_coefficient();
 

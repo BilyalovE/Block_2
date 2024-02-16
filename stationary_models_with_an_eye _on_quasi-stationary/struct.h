@@ -1,13 +1,13 @@
 #pragma once
 
-/// @brief Pipiline_parameters - Структура парметров трубопровода
+/// @brief Pipeline_parameters - Структура парметров трубопровода
 /// @param D - внешний диаметр [м]
 /// @param ds - толщина стенки [м]
 /// @param z0 - высота в начале участка трубопровода [м]
 /// @param zl - высотка в конце участка трубопровода [м]
 /// @param delta - абсолютная шероховатость трубы [м]
 /// @param l - длина трубопровода [м]
-struct Pipiline_parameters {
+struct Pipeline_parameters {
 	// D - внешний диаметр [м]
 	double D;
 	// ds - толщина стенки [м]

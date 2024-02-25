@@ -191,3 +191,14 @@ TEST(Block_2, Task_PP_Newton) {
 	double abs_error = 9;
 	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }
+
+TEST(Block_2, Task_PP_Iterative_Eyler) {
+	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_QP_Eyler
+	Pipeline_parameters pipeline_parameters_PP_Eyler = { 0.720, 0.010, 100, 50, 0.00015, 80000 };
+	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_QP_Eyler
+	Oil_parameters oil_parameters_PP_Eyler = { 870, 15e-6, 0, 0.6e6, 0.9722 };
+	double pressure_p0 = solver_QP_Eyler(pipeline_parameters_PP_Eyler, oil_parameters_PP_Eyler);
+	
+	double abs_error = 4;
+	//EXPECT_NEAR(2739, Q * 3600, abs_error);
+}

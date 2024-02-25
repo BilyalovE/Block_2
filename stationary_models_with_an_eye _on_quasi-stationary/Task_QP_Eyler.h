@@ -32,7 +32,7 @@ public:
 	/// @param internal_diameter - внутренний диаметр трубы [м]
 	/// @param p_previous - давление на предыдущей итерации граничное условие) [Па]
 	Task_QP_Eyler(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters,
-		double tw, int n, double h, double internal_diameter, double p_previous);
+		double tw, int n, double h, double p_previous);
 	// Методы класса
 
 	/// @brief Сеттер класса
@@ -44,7 +44,7 @@ public:
 	/// @param internal_diameter - внутренний диаметр трубы [м]
 	/// @param p_previous - давление на предыдущей итерации граничное условие) [Па]
 	void setter(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters,
-		double tw, int n, double h, double internal_diameter, double p_previous);
+		double tw, int n, double h, double p_previous);
 
 	/// @brief Солвер для решения задачи QP численным методом Эйлера
 	/// @return pressure_current - давление на текущей итерации(рассчитанное значение)[Па]

@@ -4,56 +4,57 @@
 #include <pde_solvers/pde_solvers.h>
 #include <fixed/fixed_nonlinear_solver.h>
 
-// Подключение класса для определения гидравлического сопротивления 
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
 #include "Hydraulic_resistance_coefficient.h"
-// Подключение класса для решения задач из блока 2 - Реализация стационарных моделей 
-// с прицелом на квазистационар (Уравнение Бернулли)
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 2 - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
+// пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
 #include "Bernoulli_equation.h"
 #include "struct.h"
 #include "const.h"
 
 
-/// @brief PP_solver_Newton - класс основанный на решателе методом Ньютона-Рафсона для задачи PP
-// <1> - Размерность системы уравнений - скалярный случай
+/// @brief PP_solver_Newton - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ PP
+// <1> - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 class PP_solver_Newton : public fixed_system_t<1>
 {
 
 private:
-	// Объявление полей класса
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
-	// pipeline_parameters_PP_Newton - поле класса (структура с именем Pipeline_parameters для переменной pipeline_parameters_PP_Newton)
+	// pipeline_parameters_PP_Newton - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Pipeline_parameters пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ pipeline_parameters_PP_Newton)
 	Pipeline_parameters m_pipeline_parameters_PP_Newton;
-	// m_oil_parameters_PP_Newton - поле класса (структура с именем Oil_parameters для переменной oil_parameters_PP_Newton)
+	// m_oil_parameters_PP_Newton - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Oil_parameters пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ oil_parameters_PP_Newton)
 	Oil_parameters m_oil_parameters_PP_Newton;
-	// m_hydraulic_resistance - поле класса - коэффициент гидравлического сопротивления
+	// m_hydraulic_resistance - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	double m_hydraulic_resistance;
-	// m_d - поле класса - внутренний диаметр трубы[м]
+	// m_d - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ[пїЅ]
 	double m_d;
-	// m_initial_speed_approximation - начальное приближение скорости течения нефти, [м/с]
+	// m_initial_speed_approximation - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, [пїЅ/пїЅ]
 	double m_initial_speed_approximation;
 
 	using fixed_system_t<1>::var_type;
 
 public:
-	/// @brief PP_solver_newton - конструктор класса для задачи PP методом Ньютона-Рафсона
+	/// @brief PP_solver_newton - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ PP пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	PP_solver_Newton(Pipeline_parameters pipeline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton);
-	/// @brief residuals - функция невязок
-	/// @param - v - искомый параметр (скорость, [м/с])
+	/// @brief residuals - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	/// @param - v - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, [пїЅ/пїЅ])
 	var_type residuals(const var_type& v) {
-		// Объявляем объект task_PP_Newton класса Bernoulli_equation
+		// inner_diameter - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ [пїЅ]
+		double inner_diameter = m_pipeline_parameters_PP_Newton.get_inner_diameter();
+		// Re - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		Bernoulli_equation task_PP_Newton(m_pipeline_parameters_PP_Newton, m_oil_parameters_PP_Newton);
-		// internal_diameter - внутренний диаметр трубы [м]
-		double internal_diameter = task_PP_Newton.internal_diameter();// Re - число Рейнольдса
 		double Re = task_PP_Newton.reynolds_number(v);
-		// relative_equivalent_roughness - относительную эквивалентная шероховатость (e)
-		double relative_equivalent_roughness = task_PP_Newton.relative_roughness();
-		// hydraulic_resistance - гидравлическое_сопротивление (lambda)
+		// relative_equivalent_roughness - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (e)
+		double relative_equivalent_roughness = m_pipeline_parameters_PP_Newton.get_relative_roughness();
+		// hydraulic_resistance - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ_пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (lambda)
 		Hydraulic_resistance_coefficient hydraulic_task_PP_Newton(Re, relative_equivalent_roughness);
 		m_hydraulic_resistance = hydraulic_task_PP_Newton.calculation_hydraulic_resistance_coefficient();
 		//m_hydraulic_resistance = hydraulic_resistance_isaev(Re, relative_equivalent_roughness);
-		// result - функция невязок
+		// result - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		double result;
-		result = v - task_PP_Newton.speed_pressure(m_hydraulic_resistance);
+		task_PP_Newton.setter(m_pipeline_parameters_PP_Newton, m_oil_parameters_PP_Newton, m_hydraulic_resistance);
+		result = v - task_PP_Newton.speed_pressure();
 		return result;
 	}
 

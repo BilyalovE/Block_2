@@ -23,6 +23,8 @@
 // Подключение класса для решения задачи PP методом Ньютона-Рафсона
 #include "Task_PP_Newton.h"
 
+#include "Task_PP_Newton_QP_Eyler.h"
+
 // Используем пространство имен std и pde_solvers
 using namespace std;
 using namespace pde_solvers;
@@ -140,6 +142,17 @@ double solver_PP_Newton(Pipeline_parameters pipeline_parameters_PP_Newton, Oil_p
 	return Q;
 }
 
+/// @brief solver_PP_Newton - функция решения задачи PP_Newton
+/// @param Pipeline_parameters - структура параметров трубопровода
+/// @param Oil_parameters - структура параметров нефти
+/// @return Q - расход
+double solver_PP_Newton_Iterative_Eyler(Pipeline_parameters pipeline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton) {
+	// Создание экземпляра класса, который и будет решаемой системой
+	PP_solver_Newton_QP_Eyler pp_solver_newton_qp_eyler(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
+	double Q = pp_solver_newton_qp_eyler.solver_newton_rafson();
+	return Q;
+}
+
 
 TEST(Block_2, Task_QP) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_QP
@@ -163,22 +176,48 @@ TEST(Block_2, Task_QP_Iterative_Eyler) {
 
 TEST(Block_2, Task_PP) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_PP
-	Pipeline_parameters pipeline_parameters_PP = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0.9722, 15e-6 };
+	Pipeline_parameters pipeline_parameters_PP = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0, 15e-6 };
 	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP
 	Oil_parameters oil_parameters_PP = { 870, 5e6, 0.8e6 };
 	double Q = solver_PP(pipeline_parameters_PP, oil_parameters_PP);
 	double abs_error = 4;
-	cout <<"Задача PP = " << Q * 3600 << endl;
+	//cout <<"Задача PP = " << Q * 3600 << endl;
 	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }
 
 TEST(Block_2, Task_PP_Newton) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_PP_Newton
-	Pipeline_parameters pipeline_parameters_PP_Newton = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0.9722, 15e-6 };
+	Pipeline_parameters pipeline_parameters_PP_Newton = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0, 15e-6 };
 	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Newton
 	Oil_parameters oil_parameters_PP_Newton = { 870, 5e6, 0.8e6 };
   	double Q = solver_PP_Newton(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
-	cout << "Задача PP_Newton= " << Q * 3600 << endl;
+	//cout << "Задача PP_Newton= " << Q * 3600 << endl;
+	double abs_error = 9;
+	EXPECT_NEAR(2739, Q * 3600, abs_error);
+}
+
+// Задача PP поверх Эйлера
+TEST(Block_2, Task_PP_Iterative_Eyler) {
+	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_PP_Iterative_Eyler
+	Pipeline_parameters pipeline_parameters_PP_Iterative_Eyler = { 0.720, 0.010, 100, 50, 0.00015, 80000, 0.9722, 15e-6 };
+	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Iterative_Eyler
+	Oil_parameters oil_parameters_PP_Iterative_Eyler = { 870, 0, 0.6e6 };
+	double pressure_p0 = solver_QP_Eyler(pipeline_parameters_PP_Iterative_Eyler, oil_parameters_PP_Iterative_Eyler);
+	oil_parameters_PP_Iterative_Eyler.p0 = pressure_p0;
+	double abs_error = 15;
+	double Q = solver_PP(pipeline_parameters_PP_Iterative_Eyler, oil_parameters_PP_Iterative_Eyler);
+	cout <<"Задача PP_Iterative_Eyler = " << Q * 3600 << endl;
+	EXPECT_NEAR(3500, Q * 3600, abs_error);
+}
+
+
+TEST(Block_2, Task_PP_Newton_Iterative_Eyler) {
+	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_PP_Newton
+	Pipeline_parameters pipeline_parameters_PP_Newton_Iterative_Eyler = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0, 15e-6 };
+	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Newton
+	Oil_parameters oil_parameters_PP_Newton_Iterative_Eyler = { 870, 5e6, 0.8e6 };
+	double Q = solver_PP_Newton_Iterative_Eyler(pipeline_parameters_PP_Newton_Iterative_Eyler, oil_parameters_PP_Newton_Iterative_Eyler);
+	//cout << "Задача PP_Newton= " << Q * 3600 << endl;
 	double abs_error = 9;
 	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }

@@ -31,24 +31,14 @@ class Bernoulli_equation
 
 public:
 	/// @brief конструктор класса по умолчанию Bernoulli_equation
+	Bernoulli_equation(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters, double hydraulic_resistance);
+
+	/// @brief перегрузка класса по умолчанию Bernoulli_equation
 	Bernoulli_equation(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters);
 
-	/// @brief конструктор класса Bernoulli_equation
-	Bernoulli_equation(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters,
-		double hydraulic_resistance, double v, double d);
+	void setter(const Pipeline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters, double hydraulic_resistance);
 
-	void setter1(const Pipeline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
-
-	/// @brief setter - сеттер конструктора Bernoulli_equation
-	/// @param pipeline_parameters - структура параметров трубопровода
-	/// @param oil_parameters - структура параметров нефти
-	/// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
-	/// @param v - скорость течения нефти [м/с]
-	/// @param d - внутренний диаметр трубы [м]
-	void setter2(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters,
-		double& hydraulic_resistance, const double& v, double& d);
-
-
+	
 
 	/// @brief pressure_p0 - Метод, рассчитывающий давление в начале участка нефтепровода [Па]
 	/// @return m_p0 - давление в начале участка нефтепровода [Па]

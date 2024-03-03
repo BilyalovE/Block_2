@@ -1,21 +1,21 @@
 #include "Task_QP_Eyler.h"
 
 Task_QP_Eyler::Task_QP_Eyler(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters,
-	double tw, int n, double h, double internal_diameter, double p_previous)
+	double tw, int n, double h, double p_previous)
 {
-	setter(pipeline_parameters, oil_parameters, tw, n, h, internal_diameter, p_previous);
+	setter(pipeline_parameters, oil_parameters, tw, n, h, p_previous);
 }
 
 // Методы класса
 
 void Task_QP_Eyler::setter(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters,
-	double tw, int n, double h, double internal_diameter, double pressure_previous) {
+	double tw, int n, double h, double pressure_previous) {
 	this->pipeline_parameters = pipeline_parameters;
 	this->oil_parameters = oil_parameters;
 	this->tw = tw;
 	this->n = n;
 	this->h = h;
-	this->internal_diameter = internal_diameter;
+	this->internal_diameter = pipeline_parameters.get_inner_diameter();
 	this->pressure_previous = pressure_previous;
 }
 double Task_QP_Eyler::solver_eyler()

@@ -8,20 +8,21 @@ PP_solver_Newton::PP_solver_Newton(Pipeline_parameters pipeline_parameters_PP_Ne
 
 double PP_solver_Newton::solver_newton_rafson()
 {
-	// Задание настроек решателя по умолчанию
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	fixed_solver_parameters_t<1, 0> parameters;
-	// Создание структуры для записи результатов расчета
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	fixed_solver_result_t<1> result;
-	// Решение системы нелинейных уравнений <2> с помощью решателя Ньютона - Рафсона
-	// m_initial_speed_approximation - Начальное приближение
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ <2> пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	// m_initial_speed_approximation - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	m_initial_speed_approximation = 0.2;
 	fixed_newton_raphson<1>::solve_dense(*this, { m_initial_speed_approximation }, parameters, &result);
-	// Объявляем объект task_PP_Newton класса Bernoulli_equation
-	Bernoulli_equation task_PP_Newton(m_pipeline_parameters_PP_Newton, m_oil_parameters_PP_Newton, 0, result.argument, 0.7);
-	// Q - объемный расход[м ^ 3 / ч]
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ task_PP_Newton пїЅпїЅпїЅпїЅпїЅпїЅ Bernoulli_equation
+	Bernoulli_equation task_PP_Newton(m_pipeline_parameters_PP_Newton, m_oil_parameters_PP_Newton);
+	// Q - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ[пїЅ ^ 3 / пїЅ]
 	//cout << result.argument << endl;
-	double Q = task_PP_Newton.volume_flow();
+	double Q = task_PP_Newton.volume_flow(result.argument);
 	//cout << Q*3600 << endl;
 	return Q;
+	
 }
 

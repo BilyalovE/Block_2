@@ -30,6 +30,9 @@
     <ClCompile Include="Task_PP_Newton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Task_PP_Newton_Eyler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hydraulic_resistance_coefficient.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Task_PP_Newton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PP_Newton_Eyler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

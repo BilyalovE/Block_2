@@ -1,7 +1,7 @@
 #pragma once
 #include <cmath>
 #include "const.h"
-/// @brief Pipeline_parameters - Структура парметров трубопровода
+/// @brief Pipeline_parameters - Структура параметров трубопровода
 /// @param D - внешний диаметр [м]
 /// @param ds - толщина стенки [м]
 /// @param z0 - высота в начале участка трубопровода [м]
@@ -52,9 +52,6 @@ struct Pipeline_parameters {
 		double v = speed_flow();
 		return v * inner_diameter / nu;
 	}
-
-
-
 };
 
 /// @brief Oil_parameters - Структура парметров нефти

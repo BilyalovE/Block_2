@@ -1,14 +1,13 @@
 ﻿/*!
 	\ brief Блок 2 - Реализация стационарных моделей с прицелом на квазистационар
 	\ author Bilyalov Eldar
-	\ version 4 - Решение задач, рефакторинг, многофайловый проект 
-	\date 16.02.2024
+	\ version 5 - Решение последних двух задач, рефакторинг
+	\date 09.03.2024
 */
 #pragma once
 // Подключаем необходимые библиотеки
 #include <iostream>
 #include "gtest/gtest.h"
-
 #include <iomanip>
 
 // Подключение класса для определения гидравлического сопротивления 
@@ -18,12 +17,15 @@
 #include "Bernoulli_equation.h"
 // Подключение класса для решения задачи QP численным методом Эйлера
 #include "Task_QP_Eyler.h"
+
 #include "struct.h"
 #include "const.h"
+
 // Подключение класса для решения задачи PP методом Ньютона-Рафсона
 #include "Task_PP_Newton.h"
-
-#include "Task_PP_Newton_QP_Eyler.h"
+#include "Task_PP_Newton_Eyler.h"
+ 
+//#include "Task_PP_Newton_QP_Eyler.h"
 
 // Используем пространство имен std и pde_solvers
 using namespace std;
@@ -58,43 +60,6 @@ double solver_QP(const Pipeline_parameters& pipeline_parameters_QP, const Oil_pa
 	return pressure_p0;
 }
 
-/// @brief solver_QP_Eyler - функция решения задачи QP методом Эйлера
-/// @param pipeline_parameters_QP_Eyler - структура параметров трубопровода
-/// @param oil_parameters_QP_Eyler - структура параметров нефти
-/// @return pressure_p0 - давление в начале участка нефтепровода [Па]
-double solver_QP_Eyler(const Pipeline_parameters& pipeline_parameters_QP_Eyler,
-	const Oil_parameters& oil_parameters_QP_Eyler)
-{
-	// v - скорость течения нефти [м/с]
-	double v = pipeline_parameters_QP_Eyler.speed_flow();
-	// relative_roughness - относительная эквивалентная шероховатость
-	double relative_roughness = pipeline_parameters_QP_Eyler.get_relative_roughness();
-	// Re - число Рейнольдса
-	double Re = pipeline_parameters_QP_Eyler.reynolds_number();
-	// pressure_p0 - давление в начале участка нефтепровода[Па]
-	double pressure_p0;
-	// hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)
-	double hydraulic_resistance;
-	// Объявляем объект lambda_QP_Eyler класса Hydraulic_resistance_coefficient
-	Hydraulic_resistance_coefficient lambda_QP_Eyler(Re, relative_roughness);
-	// Расчет коэффициента гидравлического сопротивления (lambda)
-	hydraulic_resistance = lambda_QP_Eyler.calculation_hydraulic_resistance_coefficient();
-	// tw - касательное напряжение трения, учитывающее трение жидкости при течении по трубе
-	double tw = hydraulic_resistance / 8 * oil_parameters_QP_Eyler.ro * pow(v, 2);
-	// pressure_previous - давление на предыдущей итерации (граничное условие) [Па]
-	double pressure_previous = oil_parameters_QP_Eyler.pl;
-	// pressure_current - давление на текущей итерации(рассчитанное значение) [Па]
-	double pressure_current;
-	// n - кол-во точек расчётной сетки
-	int n = 1000;
-	// h - шаг по по координате расчетной сетки [м]
-	double h = pipeline_parameters_QP_Eyler.l / n;
-	Task_QP_Eyler task_QP_Eyler(pipeline_parameters_QP_Eyler, oil_parameters_QP_Eyler,
-		tw, n, h, pressure_previous);
-	// Вызов итеративного метода Эйлера
-	pressure_p0 = task_QP_Eyler.solver_eyler();
-	return pressure_p0;
-}
 
 /// @brief solver_PP - функция решения задачи PP
 /// @param pipeline_parameters_PP - структура параметров трубопровода
@@ -131,29 +96,6 @@ double solver_PP(const Pipeline_parameters& pipeline_parameters_PP, const Oil_pa
 }
 
 
-/// @brief solver_PP_Newton - функция решения задачи PP_Newton
-/// @param Pipeline_parameters - структура параметров трубопровода
-/// @param Oil_parameters - структура параметров нефти
-/// @return Q - расход
-double solver_PP_Newton(Pipeline_parameters pipeline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton) {
-	// Создание экземпляра класса, который и будет решаемой системой
-	PP_solver_Newton solver_newton(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
-	double Q = solver_newton.solver_newton_rafson();
-	return Q;
-}
-
-/// @brief solver_PP_Newton - функция решения задачи PP_Newton
-/// @param Pipeline_parameters - структура параметров трубопровода
-/// @param Oil_parameters - структура параметров нефти
-/// @return Q - расход
-double solver_PP_Newton_Iterative_Eyler(Pipeline_parameters pipeline_parameters_PP_Newton, Oil_parameters oil_parameters_PP_Newton) {
-	// Создание экземпляра класса, который и будет решаемой системой
-	PP_solver_Newton_QP_Eyler pp_solver_newton_qp_eyler(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
-	double Q = pp_solver_newton_qp_eyler.solver_newton_rafson();
-	return Q;
-}
-
-
 TEST(Block_2, Task_QP) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_QP
 	Pipeline_parameters pipeline_parameters_QP = { 0.720, 0.010, 100, 50, 0.00015, 80000, 0.9722, 15e-6 };
@@ -164,12 +106,16 @@ TEST(Block_2, Task_QP) {
 	EXPECT_NEAR(6.03e6, pressure_p0, abs_error);
 }
 
-TEST(Block_2, Task_QP_Iterative_Eyler) {
+TEST(Block_2, Task_QP_Eyler) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_QP_Eyler
 	Pipeline_parameters pipeline_parameters_QP_Eyler = { 0.720, 0.010, 100, 50, 0.00015, 80000, 0.9722, 15e-6 };
 	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_QP_Eyler
 	Oil_parameters oil_parameters_QP_Eyler = { 870, 0, 0.6e6 };
-	double pressure_p0 = solver_QP_Eyler(pipeline_parameters_QP_Eyler, oil_parameters_QP_Eyler);
+	// v - скорость течения нефти [м/с]
+	double v = pipeline_parameters_QP_Eyler.speed_flow();
+	Task_QP_Eyler task_QP_Eyler(pipeline_parameters_QP_Eyler, oil_parameters_QP_Eyler, v);
+	// Вызов итеративного метода Эйлера
+	double pressure_p0 = task_QP_Eyler.solver_eyler();
 	double abs_error = 0.01e6;
 	EXPECT_NEAR(6.03e6, pressure_p0, abs_error);
 }
@@ -190,45 +136,45 @@ TEST(Block_2, Task_PP_Newton) {
 	Pipeline_parameters pipeline_parameters_PP_Newton = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0, 15e-6 };
 	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Newton
 	Oil_parameters oil_parameters_PP_Newton = { 870, 5e6, 0.8e6 };
-  	double Q = solver_PP_Newton(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
+	// Создание экземпляра класса, который и будет решаемой системой
+	PP_solver_Newton solver_newton(pipeline_parameters_PP_Newton, oil_parameters_PP_Newton);
+	double Q = solver_newton.solver_newton_rafson();
 	//cout << "Задача PP_Newton= " << Q * 3600 << endl;
 	double abs_error = 9;
 	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }
 
 // Задача PP поверх Эйлера
-TEST(Block_2, Task_PP_Iterative_Eyler) {
+TEST(Block_2, Task_PP_Eyler) {
 	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_PP_Iterative_Eyler
-	Pipeline_parameters pipeline_parameters_PP_Iterative_Eyler = { 0.720, 0.010, 100, 50, 0.00015, 80000, 0.9722, 15e-6 };
+	Pipeline_parameters pipeline_parameters_PP_Eyler = { 0.720, 0.010, 100, 50, 0.00015, 80000, 0.9722, 15e-6 };
 	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Iterative_Eyler
-	Oil_parameters oil_parameters_PP_Iterative_Eyler = { 870, 0, 0.6e6 };
-	double pressure_p0 = solver_QP_Eyler(pipeline_parameters_PP_Iterative_Eyler, oil_parameters_PP_Iterative_Eyler);
-	oil_parameters_PP_Iterative_Eyler.p0 = pressure_p0;
+	Oil_parameters oil_parameters_PP_Eyler = { 870, 0, 0.6e6 };
+	// v - скорость течения нефти [м/с]
+	double v = pipeline_parameters_PP_Eyler.speed_flow();
+	Task_QP_Eyler task_PP_Eyler(pipeline_parameters_PP_Eyler, oil_parameters_PP_Eyler, v);
+	// Вызов итеративного метода Эйлера
+	double pressure_p0 = task_PP_Eyler.solver_eyler();
+	oil_parameters_PP_Eyler.p0 = pressure_p0;
 	double abs_error = 15;
-	double Q = solver_PP(pipeline_parameters_PP_Iterative_Eyler, oil_parameters_PP_Iterative_Eyler);
+	double Q = solver_PP(pipeline_parameters_PP_Eyler, oil_parameters_PP_Eyler);
 	cout <<"Задача PP_Iterative_Eyler = " << Q * 3600 << endl;
 	EXPECT_NEAR(3500, Q * 3600, abs_error);
 }
 
-
-TEST(Block_2, Task_PP_Newton_Iterative_Eyler) {
-	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_PP_Newton
-	Pipeline_parameters pipeline_parameters_PP_Newton_Iterative_Eyler = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0, 15e-6 };
-	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_PP_Newton
-	Oil_parameters oil_parameters_PP_Newton_Iterative_Eyler = { 870, 5e6, 0.8e6 };
-	double Q = solver_PP_Newton_Iterative_Eyler(pipeline_parameters_PP_Newton_Iterative_Eyler, oil_parameters_PP_Newton_Iterative_Eyler);
-	//cout << "Задача PP_Newton= " << Q * 3600 << endl;
+// Задача PP на Ньютоне поверх Эйлера
+TEST(Block_2, Task_PP_Newton_Eyler) {
+	Pipeline_parameters pipeline_parameters_PP_Newton_Eyler = { 0.720, 0.010, 50, 100, 0.00015, 80000, 0, 15e-6 };
+	Oil_parameters oil_parameters_PP_Newton_Eyler = { 870, 5e6, 0.8e6 };
+	double initial_v = 0.5;
+	Task_PP_Newton_Eyler solver_PP_Newton_Eyler(pipeline_parameters_PP_Newton_Eyler, oil_parameters_PP_Newton_Eyler, initial_v);
+	double initial_pressure_p0 = solver_PP_Newton_Eyler.solver_eyler();
+	double Q = solver_PP_Newton_Eyler.solver_newton_rafson(initial_pressure_p0);
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << Q << std::endl;
+	std::cout << std::endl;
 	double abs_error = 9;
 	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }
 
-TEST(Block_2, Task_PP_Iterative_Eyler) {
-	/// Объявление структуры с именем Pipeline_parameters для переменной pipeline_parameters_QP_Eyler
-	Pipeline_parameters pipeline_parameters_PP_Eyler = { 0.720, 0.010, 100, 50, 0.00015, 80000 };
-	/// Объявление структуры с именем Oil_parameters для переменной oil_parameters_QP_Eyler
-	Oil_parameters oil_parameters_PP_Eyler = { 870, 15e-6, 0, 0.6e6, 0.9722 };
-	double pressure_p0 = solver_QP_Eyler(pipeline_parameters_PP_Eyler, oil_parameters_PP_Eyler);
-	
-	double abs_error = 4;
-	//EXPECT_NEAR(2739, Q * 3600, abs_error);
-}

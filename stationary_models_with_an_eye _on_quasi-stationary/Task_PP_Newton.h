@@ -57,8 +57,8 @@ public:
 		result = v - task_PP_Newton.speed_pressure();
 		return result;
 	}
-
+	 
 	double solver_newton_rafson();
 };
 
-	
+	 

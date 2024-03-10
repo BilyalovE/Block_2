@@ -9,7 +9,7 @@ Task_QP_Eyler::Task_QP_Eyler(const Pipeline_parameters& pipeline_parameters, con
 
 // Методы класса
 
-double Task_QP_Eyler::solver_eyler()
+double Task_QP_Eyler::solver_eyler(double v)
 {
 	internal_diameter = pipeline_parameters.get_inner_diameter();
 	// relative_roughness - относительная эквивалентная шероховатость

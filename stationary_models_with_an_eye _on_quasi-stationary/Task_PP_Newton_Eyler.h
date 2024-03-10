@@ -19,7 +19,7 @@ public:
 	/// @brief residuals - ������� �������
 	/// @param - v - ������� �������� (��������, [�/�])
 	var_type residuals(const var_type& x) {
-		double count_pressure_p0 = solver_eyler();
+		double count_pressure_p0 = solver_eyler(x);
 		return (m_oil_parameters.p0 - count_pressure_p0);
 	}
 

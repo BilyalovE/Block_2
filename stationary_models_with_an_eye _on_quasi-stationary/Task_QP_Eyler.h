@@ -39,7 +39,7 @@ public:
 
 	/// @brief Солвер для решения задачи QP численным методом Эйлера
 	/// @return pressure_current - давление на текущей итерации(рассчитанное значение)[Па]
-	double solver_eyler();
+	double solver_eyler(double v);
 
 };
 

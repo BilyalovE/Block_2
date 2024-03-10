@@ -115,7 +115,7 @@ TEST(Block_2, Task_QP_Eyler) {
 	double v = pipeline_parameters_QP_Eyler.speed_flow();
 	Task_QP_Eyler task_QP_Eyler(pipeline_parameters_QP_Eyler, oil_parameters_QP_Eyler, v);
 	// Вызов итеративного метода Эйлера
-	double pressure_p0 = task_QP_Eyler.solver_eyler();
+	double pressure_p0 = task_QP_Eyler.solver_eyler(v);
 	double abs_error = 0.01e6;
 	EXPECT_NEAR(6.03e6, pressure_p0, abs_error);
 }
@@ -154,11 +154,10 @@ TEST(Block_2, Task_PP_Eyler) {
 	double v = pipeline_parameters_PP_Eyler.speed_flow();
 	Task_QP_Eyler task_PP_Eyler(pipeline_parameters_PP_Eyler, oil_parameters_PP_Eyler, v);
 	// Вызов итеративного метода Эйлера
-	double pressure_p0 = task_PP_Eyler.solver_eyler();
+	double pressure_p0 = task_PP_Eyler.solver_eyler(v);
 	oil_parameters_PP_Eyler.p0 = pressure_p0;
 	double abs_error = 15;
 	double Q = solver_PP(pipeline_parameters_PP_Eyler, oil_parameters_PP_Eyler);
-	cout <<"Задача PP_Iterative_Eyler = " << Q * 3600 << endl;
 	EXPECT_NEAR(3500, Q * 3600, abs_error);
 }
 
@@ -168,12 +167,8 @@ TEST(Block_2, Task_PP_Newton_Eyler) {
 	Oil_parameters oil_parameters_PP_Newton_Eyler = { 870, 5e6, 0.8e6 };
 	double initial_v = 0.5;
 	Task_PP_Newton_Eyler solver_PP_Newton_Eyler(pipeline_parameters_PP_Newton_Eyler, oil_parameters_PP_Newton_Eyler, initial_v);
-	double v = solver_PP_Newton_Eyler.solver_newton_rafson();
-	std::cout << std::endl;
-	std::cout << std::endl;
-	std::cout << v << std::endl;
-	std::cout << std::endl;
-	double abs_error = 9;
-	EXPECT_NEAR(2739, v * 3600, abs_error);
+	double Q = solver_PP_Newton_Eyler.solver_newton_rafson();
+	double abs_error = 8;
+	EXPECT_NEAR(2739, Q * 3600, abs_error);
 }
  

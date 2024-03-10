@@ -20,8 +20,6 @@ double Task_PP_Newton_Eyler::solver_newton_rafson()
 	//m_oil_parameters.p0 = result.argument;
 	Bernoulli_equation task_PP_Newton_Eyler(m_pipeline_parameters, m_oil_parameters);
 	// Q - �������� ������[� ^ 3 / �]
-	//cout << result.argument << endl;
-	//double Q = task_PP_Newton_Eyler.speed_pressure();
-	//cout << Q*3600 << endl;
-	return result.argument;
+	double Q = task_PP_Newton_Eyler.volume_flow(result.argument);
+	return Q;
 }

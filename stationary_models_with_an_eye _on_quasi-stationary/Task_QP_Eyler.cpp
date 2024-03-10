@@ -15,7 +15,13 @@ double Task_QP_Eyler::solver_eyler()
 	// relative_roughness - относительная эквивалентная шероховатость
 	double relative_roughness = pipeline_parameters.get_relative_roughness();
 	// Re - число Рейнольдса
-	double Re = pipeline_parameters.reynolds_number();
+	double Re;
+	if (pipeline_parameters.Q == 0) {
+		Re = pipeline_parameters.reynolds_number_without_Q(v);
+	}
+	else {
+		Re = pipeline_parameters.reynolds_number();
+	}
 	// pressure_p0 - давление в начале участка нефтепровода[Па]
 	double pressure_p0;
 	// hydraulic_resistance - коэффициент гидравлического сопротивления (lambda)

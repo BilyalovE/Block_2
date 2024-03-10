@@ -52,9 +52,14 @@ struct Pipeline_parameters {
 		double v = speed_flow();
 		return v * inner_diameter / nu;
 	}
+	// Расчет числа Рейнольдса 
+	double reynolds_number_without_Q(double initial_speed) const {
+		double inner_diameter = get_inner_diameter();
+		return initial_speed * inner_diameter / nu;
+	}
 };
 
-/// @brief Oil_parameters - Структура парметров нефти
+/// @brief Oil_parameters - Структура параметров нефти
 struct Oil_parameters {
 	/// @param ro - плотность нефти [кг/м^3]
 	double ro;

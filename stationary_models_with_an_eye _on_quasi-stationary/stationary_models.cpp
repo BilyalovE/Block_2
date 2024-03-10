@@ -168,13 +168,12 @@ TEST(Block_2, Task_PP_Newton_Eyler) {
 	Oil_parameters oil_parameters_PP_Newton_Eyler = { 870, 5e6, 0.8e6 };
 	double initial_v = 0.5;
 	Task_PP_Newton_Eyler solver_PP_Newton_Eyler(pipeline_parameters_PP_Newton_Eyler, oil_parameters_PP_Newton_Eyler, initial_v);
-	double initial_pressure_p0 = solver_PP_Newton_Eyler.solver_eyler();
-	double Q = solver_PP_Newton_Eyler.solver_newton_rafson(initial_pressure_p0);
+	double v = solver_PP_Newton_Eyler.solver_newton_rafson();
 	std::cout << std::endl;
 	std::cout << std::endl;
-	std::cout << Q << std::endl;
+	std::cout << v << std::endl;
 	std::cout << std::endl;
 	double abs_error = 9;
-	EXPECT_NEAR(2739, Q * 3600, abs_error);
+	EXPECT_NEAR(2739, v * 3600, abs_error);
 }
-
+ 

@@ -10,17 +10,17 @@ class Bernoulli_equation
 {
 	// Поля класса
 
-	// m_pipiline_parameters - структура парметров трубопровода
-	Pipiline_parameters m_pipiline_parameters;
-	// m_oil_parameters - структура парметров нефти
+	// m_pipeline_parameters - структура параметров трубопровода
+	Pipeline_parameters m_pipeline_parameters;
+	// m_oil_parameters - структура параметров нефти
 	Oil_parameters m_oil_parameters;
 	// m_hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
 	double m_hydraulic_resistance;
-	// m_v - cкорость течения нефти [м/с]
+	// m_v - скорость течения нефти [м/с]
 	double m_v;
 	// m_d - внутренний диаметр трубы [м]
 	double m_d;
-	// m_relative_roughness - oтносительная эквивалентная шероховатость(e)
+	// m_relative_roughness - относительная эквивалентная шероховатость(e)
 	double m_relative_roughness;
 	// m_Re - число Рейнольдса
 	double m_Re;
@@ -30,25 +30,15 @@ class Bernoulli_equation
 	double m_p0;
 
 public:
-	/// @brief конструткор класса по умолчанию Bernoulli_equation
-	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
+	/// @brief конструктор класса по умолчанию Bernoulli_equation
+	Bernoulli_equation(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters, double hydraulic_resistance);
 
-	/// @brief конструткор класса Bernoulli_equation
-	Bernoulli_equation(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
-		double hydraulic_resistance, double v, double d);
+	/// @brief перегрузка класса по умолчанию Bernoulli_equation
+	Bernoulli_equation(const Pipeline_parameters& pipeline_parameters, const Oil_parameters& oil_parameters);
 
-	void setter1(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters);
+	void setter(const Pipeline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters, double hydraulic_resistance);
 
-	/// @brief setter - сеттер конструтора Bernoulli_equation
-	/// @param pipiline_parameters - труктура парметров трубопровода
-	/// @param oil_parameters - структура парметров нефти
-	/// @param hydraulic_resistance - коэффициент гидравлическое_сопротивление (lambda)
-	/// @param v - cкорость течения нефти [м/с]
-	/// @param d - внутренний диаметр трубы [м]
-	void setter2(const Pipiline_parameters& pipiline_parameters, const Oil_parameters& oil_parameters,
-		double& hydraulic_resistance, const double& v, double& d);
-
-
+	
 
 	/// @brief pressure_p0 - Метод, рассчитывающий давление в начале участка нефтепровода [Па]
 	/// @return m_p0 - давление в начале участка нефтепровода [Па]
@@ -58,7 +48,7 @@ public:
 	double internal_diameter();
 
 	/// @brief  relative_roughness - метод, рассчитывающий относительную эквивалентная шероховатость
-	/// @return relative_roughness - oтносительная эквивалентная шероховатость (e)
+	/// @return relative_roughness - относительная эквивалентная шероховатость (e)
 	double relative_roughness();
 
 	/// @brief reynolds_number - метод, рассчитывающий число Рейнольдса, где nu переведено в систему СИ
